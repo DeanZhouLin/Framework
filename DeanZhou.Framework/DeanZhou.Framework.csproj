@@ -39,17 +39,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Apps\CommonExtension\Null.cs" />
-    <Compile Include="Apps\CommonExtension\DataRowContainer.cs" />
-    <Compile Include="Apps\CommonExtension\CommonExtension.cs" />
+    <Compile Include="CommonExtension\Null.cs" />
+    <Compile Include="CommonExtension\DataRowContainer.cs" />
+    <Compile Include="CommonExtension\CommonExtension.cs" />
     <Compile Include="Apps\DataWarehouseFramework\DataWarehouse.cs" />
     <Compile Include="Apps\DataWarehouseFramework\StoredDataInfo.cs" />
-    <Compile Include="Apps\FilterExtension\FilterBaseCore.cs" />
-    <Compile Include="Apps\FilterExtension\FinishedType.cs" />
-    <Compile Include="Apps\FilterExtension\PolicyFilter\PolicyFilterCore.cs" />
-    <Compile Include="Apps\FilterExtension\PolicyFilter\NeedPolicyType.cs" />
-    <Compile Include="Apps\ThreadPoolExtension\ThreadPoolExtension.cs" />
-    <Compile Include="Apps\ThreadPoolExtension\MutipleThreadResetEvent.cs" />
+    <Compile Include="Apps\FilterFramework\FilterBaseCore.cs" />
+    <Compile Include="Apps\FilterFramework\FinishedType.cs" />
+    <Compile Include="Apps\FilterFramework\PolicyFilter\PolicyFilterCore.cs" />
+    <Compile Include="Apps\FilterFramework\PolicyFilter\NeedPolicyType.cs" />
+    <Compile Include="ThreadPoolExtension\ThreadPoolExtension.cs" />
+    <Compile Include="ThreadPoolExtension\MutipleThreadResetEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
