@@ -43,24 +43,24 @@ namespace DeanZhou.Framework
             });
         }
 
-            //初始化数据项
-            /// <summary>
-            /// 初始化数据项
-            /// </summary>
-            /// <param name="key"></param>
-            /// <param name="storedData"></param>
-            private static string InitStoredDataItem(string key, StoredDataInfo<T> storedData)
+        //初始化数据项
+        /// <summary>
+        /// 初始化数据项
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="storedData"></param>
+        private static string InitStoredDataItem(string key, StoredDataInfo<T> storedData)
+        {
+            lock (lockObj)
             {
-                lock (lockObj)
+                if (EntireStoredData.ContainsKey(key))
                 {
-                    if (EntireStoredData.ContainsKey(key))
-                    {
-                        return "key:" + key + " 已存在";
-                    }
-                    EntireStoredData.Add(key, storedData);
+                    return "key:" + key + " 已存在";
                 }
-                return "";
+                EntireStoredData.Add(key, storedData);
             }
+            return "";
+        }
 
         // 获取指定key的数据项
         /// <summary>
@@ -154,6 +154,175 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 当前所有key的字符串显示
         /// </summary>
+        public static string CurrKeys
+        {
+            get
+            {
+                return string.Join(",", CurrKeysArray);
+            }
+        }
+
+    }
+
+    /// <summary>
+    /// 数据仓库
+    /// key 获取数据的方法 过期时间
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="P"></typeparam>
+    public static class DataWarehouse<T, P>
+    {
+        //存储所有数据
+        /// <summary>
+        /// 存储所有数据
+        /// </summary>
+        private static readonly Dictionary<string, StoredDataInfo<T, P>> EntireStoredData = new Dictionary<string, StoredDataInfo<T, P>>();
+
+        //锁
+        /// <summary>
+        /// 锁
+        /// </summary>
+        private static readonly object lockObj = new object();
+
+        //初始化数据项
+        /// <summary>
+        /// 初始化数据项
+        /// </summary>
+        /// <param name="key">查找key</param>
+        /// <param name="getDataMethod">获取数据方法</param>
+        /// <param name="timeOfDuration">过期时间（分钟）</param>
+        /// <param name="param"></param>
+        public static string InitDataItem(string key, Func<P, T> getDataMethod, int timeOfDuration, P param)
+        {
+            if (HasKey(key))
+            {
+                return "key:" + key + " 已存在";
+            }
+            return InitStoredDataItem(key, new StoredDataInfo<T, P>
+            {
+                Paramter = param,
+                GetDataMethod = getDataMethod,
+                TimeOfDuration = timeOfDuration,
+                LastModifyTime = DateTime.Now.AddMinutes(-2 * timeOfDuration)
+            });
+        }
+
+        //初始化数据项
+        /// <summary>
+        /// 初始化数据项
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="storedData"></param>
+        private static string InitStoredDataItem(string key, StoredDataInfo<T, P> storedData)
+        {
+            if (HasKey(key))
+            {
+                return "key:" + key + " 已存在";
+            }
+            EntireStoredData.Add(key, storedData);
+            return "";
+        }
+
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="defaultValue"></param>
+        /// <param name="isForcedRefresh"></param>
+        /// <returns></returns>
+        public static T GetData(string key, T defaultValue, bool isForcedRefresh = false)
+        {
+            try
+            {
+                return GetData(key, isForcedRefresh);
+            }
+            catch (Exception)
+            {
+                return defaultValue;
+            }
+        }
+
+        // 获取指定key的数据项
+        /// <summary>
+        /// 获取指定key的数据项
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="isForcedRefresh">是否强制更新</param>
+        /// <returns></returns>
+        public static T GetData(string key, bool isForcedRefresh = false)
+        {
+            if (!HasKey(key))
+            {
+                #region
+
+                string currKeys = "";
+                string currTType = "";
+                if (EntireStoredData.Any())
+                {
+                    currKeys = string.Join(",", EntireStoredData.Keys.ToArray());
+                    var v = EntireStoredData.First().Value.Data;
+                    currTType = v.GetType().ToString();
+                }
+                throw new Exception(string.Format("无指定key：{0}，当前池包含key集合{1}，当前池类型：{2}", key, currKeys, currTType));
+
+                #endregion
+            }
+
+            StoredDataInfo<T, P> sdi = EntireStoredData[key];
+
+            int timeOfDuration = sdi.TimeOfDuration;
+            DateTime lastModifyTime = sdi.LastModifyTime;
+
+            if (!isForcedRefresh && DateTime.Now.AddMinutes(-timeOfDuration) <= lastModifyTime)
+                return sdi.Data;
+
+            P param = sdi.Paramter;
+            sdi.Data = sdi.GetDataMethod(param);
+            sdi.LastModifyTime = DateTime.Now;
+
+            return sdi.Data;
+        }
+
+        public static T TryGetData(string key, bool isForcedRefresh = false)
+        {
+            try
+            {
+                return GetData(key, isForcedRefresh);
+            }
+            catch (Exception)
+            {
+                return default(T);
+            }
+        }
+
+        public static T RefreshData(string key)
+        {
+            try
+            {
+                return GetData(key, true);
+            }
+            catch (Exception)
+            {
+                return default(T);
+            }
+        }
+
+        public static bool HasKey(string key)
+        {
+            lock (lockObj)
+            {
+                return EntireStoredData.ContainsKey(key);
+            }
+        }
+
+        public static string[] CurrKeysArray
+        {
+            get
+            {
+                return EntireStoredData.Keys.ToArray();
+            }
+        }
+
         public static string CurrKeys
         {
             get
