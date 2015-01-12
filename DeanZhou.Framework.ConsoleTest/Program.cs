@@ -10,13 +10,18 @@ namespace DeanZhou.Framework.ConsoleTest
         static void Main(string[] args)
         {
 
-            NeedGetType n = NeedGetType.LongLen | NeedGetType.ShortLen;
-            CustomerFilterCore c = new CustomerFilterCore(n);
-            c.SetWaitingCheckData(new List<string> { "asdfsdf", "12345678", "fd23", "11" });
+            CustomerFilterCore c = new CustomerFilterCore();
+            c.SetNeedType(NeedGetType.LongLen | NeedGetType.ShortLen);
+            c.SetEachGetCount(2);
+            c.SetMaxCheckCount(5);
+            c.SetWaitingCheckData(new List<string> { "asdfsdf", "12345678", "fd23", "11", "12345", "sfdk2", "23", "3" });
 
 
             var res = c.GetFilteredData("");
-            c.set
+            c.SetNeedType(NeedGetType.ShortLen);
+            c.SetEachGetCount(5);
+
+            res = c.GetFilteredData("");
 
             #region 数据缓存仓库测试
 

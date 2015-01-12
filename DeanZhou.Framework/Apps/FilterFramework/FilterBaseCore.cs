@@ -13,8 +13,8 @@ namespace DeanZhou.Framework
 
     public class CustomerFilterCore : ComplexFilterCore<string, string, NeedGetType>
     {
-        public CustomerFilterCore(NeedGetType currNeedType, int currEachGetCount = 1, int maxCheckCount = 10) :
-            base(currNeedType, currEachGetCount, maxCheckCount)
+        public CustomerFilterCore(int currEachGetCount = 1, int maxCheckCount = 10) :
+            base(currEachGetCount, maxCheckCount)
         {
             SetIdentifyItemTypeAsEnumType((item, param) =>
             {
@@ -117,7 +117,7 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 当前需要提取的类型
         /// </summary>
-        protected readonly TEnumType CurrNeedType;
+        protected TEnumType CurrNeedType;
 
         /// <summary>
         /// 当前检测的对象
@@ -127,7 +127,7 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 最多匹配的有效数据的条数
         /// </summary>
-        protected readonly int MaxCheckCount;
+        public int MaxCheckCount { get; set; }
 
         /// <summary>
         /// 每种类型需要提取的最小条数
@@ -155,28 +155,39 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 构造函数
         /// </summary>
-        public ComplexFilterCore(TEnumType currNeedType, int currEachGetCount = 1, int maxCheckCount = 10)
+        public ComplexFilterCore(int currEachGetCount = 1, int maxCheckCount = 10)
         {
 
             SimpleFilterCore = new SimpleFilterCore<TItemType, TParamType>();
 
-            //初始化需要类型     
-            CurrNeedType = currNeedType;
-
             //每种类型需要提取的最小条数
             EachTypeMinGetCount = new Dictionary<TEnumType, int>();
 
+            SetEachGetCount(currEachGetCount);
+
+            //初始化最多检测的对象数
+            SetMaxCheckCount(maxCheckCount);
+        }
+
+        public void SetMaxCheckCount(int maxCheckCount)
+        {
+            //初始化最多检测的对象数
+            MaxCheckCount = maxCheckCount;
+        }
+
+        public void SetEachGetCount(int currEachGetCount)
+        {
             //初始化每种类型需要提取的个数
             foreach (TEnumType item in EnumTypes)
             {
-                if ((CurrNeedType.ChangeType<int>() & item.ChangeType<int>()) == item.ChangeType<int>())
-                {
-                    EachTypeMinGetCount[item] = currEachGetCount;
-                }
+                EachTypeMinGetCount[item] = currEachGetCount;
             }
+        }
 
-            //初始化最多检测的对象数
-            MaxCheckCount = maxCheckCount;
+        public void SetNeedType(TEnumType currNeedType)
+        {
+            //初始化需要类型     
+            CurrNeedType = currNeedType;
         }
 
         public void SetWaitingCheckData(IEnumerable<TItemType> waitingCheckData)
@@ -184,7 +195,7 @@ namespace DeanZhou.Framework
             WaitingCheckData = waitingCheckData;
         }
 
-        public void SetIdentifyItemTypeAsEnumType(Func<TItemType, TParamType, TEnumType> identifyItemTypeAsEnumType)
+        protected void SetIdentifyItemTypeAsEnumType(Func<TItemType, TParamType, TEnumType> identifyItemTypeAsEnumType)
         {
             //初始化对象类型识别器
             IdentifyItemTypeAsEnumType = identifyItemTypeAsEnumType;
@@ -194,7 +205,7 @@ namespace DeanZhou.Framework
         /// 添加自定义过滤器
         /// </summary>
         /// <param name="customerFilters"></param>
-        public void AddCustomerFilter(params Func<TItemType, TParamType, bool>[] customerFilters)
+        protected void AddCustomerFilter(params Func<TItemType, TParamType, bool>[] customerFilters)
         {
             SimpleFilterCore.AddCustomerFilter(customerFilters);
         }
@@ -203,7 +214,7 @@ namespace DeanZhou.Framework
         /// 添加自定义过滤器
         /// </summary>
         /// <param name="customerFilters"></param>
-        public void AddCustomerFilter(params FilterBase<TItemType, TParamType>[] customerFilters)
+        protected void AddCustomerFilter(params FilterBase<TItemType, TParamType>[] customerFilters)
         {
             SimpleFilterCore.AddCustomerFilter(customerFilters);
         }
@@ -221,10 +232,7 @@ namespace DeanZhou.Framework
             Dictionary<TEnumType, int> currEachTypeGetedCount = new Dictionary<TEnumType, int>();
             foreach (TEnumType item in EnumTypes)
             {
-                if ((CurrNeedType.ChangeType<int>() & item.ChangeType<int>()) == item.ChangeType<int>())
-                {
-                    currEachTypeGetedCount[item] = 0;
-                }
+                currEachTypeGetedCount[item] = 0;
             }
 
             int currCheckedCount = 0;
