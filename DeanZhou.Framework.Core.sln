@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeanZhou.Framework", "DeanZhou.Framework\DeanZhou.Framework.csproj", "{DDC0020F-BA89-428B-B2E0-9CE0CA81ED4C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeanZhou.Framework.ConsoleTest", "DeanZhou.Framework.ConsoleTest\DeanZhou.Framework.ConsoleTest.csproj", "{7D73EF3A-988C-4373-8C1F-2B039F5F7DBC}"
