@@ -10,6 +10,14 @@ namespace DeanZhou.Framework.ConsoleTest
         static void Main(string[] args)
         {
 
+            NeedGetType n = NeedGetType.LongLen | NeedGetType.ShortLen;
+            CustomerFilterCore c = new CustomerFilterCore(n);
+            c.SetWaitingCheckData(new List<string> { "asdfsdf", "12345678", "fd23", "11" });
+
+
+            var res = c.GetFilteredData("");
+            c.set
+
             #region 数据缓存仓库测试
 
             //key
