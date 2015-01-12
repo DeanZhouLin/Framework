@@ -78,11 +78,14 @@ namespace DeanZhou.Framework
 
                 string currKeys = "";
                 string currTType = "";
-                if (EntireStoredData.Any())
+                lock (lockObj)
                 {
-                    currKeys = string.Join(",", EntireStoredData.Keys.ToArray());
-                    var v = EntireStoredData.First().Value.Data;
-                    currTType = v.GetType().ToString();
+                    if (EntireStoredData.Any())
+                    {
+                        currKeys = string.Join(",", EntireStoredData.Keys.ToArray());
+                        var v = EntireStoredData.First().Value.Data;
+                        currTType = v.GetType().ToString();
+                    }
                 }
                 throw new Exception(string.Format("无指定key：{0}，当前池包含key集合{1}，当前池类型：{2}", key, currKeys, currTType));
 
@@ -253,8 +256,6 @@ namespace DeanZhou.Framework
         {
             if (!HasKey(key))
             {
-                #region
-
                 string currKeys = "";
                 string currTType = "";
                 if (EntireStoredData.Any())
@@ -264,8 +265,6 @@ namespace DeanZhou.Framework
                     currTType = v.GetType().ToString();
                 }
                 throw new Exception(string.Format("无指定key：{0}，当前池包含key集合{1}，当前池类型：{2}", key, currKeys, currTType));
-
-                #endregion
             }
 
             StoredDataInfo<T, P> sdi = EntireStoredData[key];
