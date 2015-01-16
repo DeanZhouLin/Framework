@@ -16,7 +16,7 @@ namespace DeanZhou.Framework
         public CustomerFilterCore(int currEachGetCount = 1, int maxCheckCount = 10) :
             base(currEachGetCount, maxCheckCount)
         {
-            SetIdentifyItemTypeAsEnumType((item, param) =>
+            RegistItemTypeAsEnumType((item, param) =>
             {
                 if (item.Length > 5)
                 {
@@ -25,7 +25,7 @@ namespace DeanZhou.Framework
                 return NeedGetType.ShortLen;
             });
 
-            AddCustomerFilter((item, param) =>
+            RegistCustomerFilter((item, param) =>
             {
                 int t;
                 return int.TryParse(item, out t);
@@ -33,11 +33,18 @@ namespace DeanZhou.Framework
         }
     }
 
-    public abstract class FilterBase<TItemType, TParamType>
+    public interface IFilter<in TItemType, in TParamType>
         where TItemType : class
         where TParamType : class
     {
-        public abstract bool DoFilter(TItemType itemType, TParamType paramType);
+        bool DoFilter(TItemType itemType, TParamType paramType);
+    }
+
+    public interface IIdentifyItemTypeAsEnumType<in TItemType, in TParamType, out TEnumType>
+        where TItemType : class
+        where TParamType : class
+    {
+        TEnumType IdentifyItemTypeAsEnumType(TItemType itemType, TParamType paramType);
     }
 
     public sealed class SimpleFilterCore<TItemType, TParamType>
@@ -91,13 +98,13 @@ namespace DeanZhou.Framework
         /// 添加自定义过滤器
         /// </summary>
         /// <param name="customerFilters"></param>
-        public void AddCustomerFilter(params FilterBase<TItemType, TParamType>[] customerFilters)
+        public void AddCustomerFilter(params IFilter<TItemType, TParamType>[] customerFilters)
         {
             if (customerFilters == null)
             {
                 return;
             }
-            foreach (FilterBase<TItemType, TParamType> customerFilter in customerFilters)
+            foreach (IFilter<TItemType, TParamType> customerFilter in customerFilters)
             {
                 AddCustomerFilter(customerFilter.DoFilter);
             }
@@ -110,7 +117,7 @@ namespace DeanZhou.Framework
         where TEnumType : struct
     {
         /// <summary>
-        /// 
+        /// 枚举
         /// </summary>
         public static readonly Array EnumTypes;
 
@@ -135,7 +142,7 @@ namespace DeanZhou.Framework
         protected readonly Dictionary<TEnumType, int> EachTypeMinGetCount;
 
         /// <summary>
-        /// 
+        /// 简单过滤器示例
         /// </summary>
         protected readonly SimpleFilterCore<TItemType, TParamType> SimpleFilterCore;
 
@@ -145,7 +152,7 @@ namespace DeanZhou.Framework
         protected Func<TItemType, TParamType, TEnumType> IdentifyItemTypeAsEnumType;
 
         /// <summary>
-        /// 
+        /// 构造函数
         /// </summary>
         static ComplexFilterCore()
         {
@@ -169,12 +176,20 @@ namespace DeanZhou.Framework
             SetMaxCheckCount(maxCheckCount);
         }
 
+        /// <summary>
+        /// 设置最大检查条数
+        /// </summary>
+        /// <param name="maxCheckCount"></param>
         public void SetMaxCheckCount(int maxCheckCount)
         {
             //初始化最多检测的对象数
             MaxCheckCount = maxCheckCount;
         }
 
+        /// <summary>
+        /// 设置每种类型需要获取的条数
+        /// </summary>
+        /// <param name="currEachGetCount"></param>
         public void SetEachGetCount(int currEachGetCount)
         {
             //初始化每种类型需要提取的个数
@@ -184,47 +199,59 @@ namespace DeanZhou.Framework
             }
         }
 
+        /// <summary>
+        /// 设置需要获取的类型
+        /// </summary>
+        /// <param name="currNeedType"></param>
         public void SetNeedType(TEnumType currNeedType)
         {
             //初始化需要类型     
             CurrNeedType = currNeedType;
         }
 
+        /// <summary>
+        /// 设置检查数据源
+        /// </summary>
+        /// <param name="waitingCheckData"></param>
         public void SetWaitingCheckData(IEnumerable<TItemType> waitingCheckData)
         {
             WaitingCheckData = waitingCheckData;
         }
 
-        protected void SetIdentifyItemTypeAsEnumType(Func<TItemType, TParamType, TEnumType> identifyItemTypeAsEnumType)
+        /// <summary>
+        /// 注册类型识别器
+        /// </summary>
+        /// <param name="identifyItemTypeAsEnumType"></param>
+        protected void RegistItemTypeAsEnumType(Func<TItemType, TParamType, TEnumType> identifyItemTypeAsEnumType)
         {
             //初始化对象类型识别器
             IdentifyItemTypeAsEnumType = identifyItemTypeAsEnumType;
         }
 
         /// <summary>
-        /// 添加自定义过滤器
+        /// 注册自定义过滤器
         /// </summary>
         /// <param name="customerFilters"></param>
-        protected void AddCustomerFilter(params Func<TItemType, TParamType, bool>[] customerFilters)
+        protected void RegistCustomerFilter(params Func<TItemType, TParamType, bool>[] customerFilters)
         {
             SimpleFilterCore.AddCustomerFilter(customerFilters);
         }
 
         /// <summary>
-        /// 添加自定义过滤器
+        /// 注册自定义过滤器
         /// </summary>
         /// <param name="customerFilters"></param>
-        protected void AddCustomerFilter(params FilterBase<TItemType, TParamType>[] customerFilters)
+        protected void RegistCustomerFilter(params IFilter<TItemType, TParamType>[] customerFilters)
         {
             SimpleFilterCore.AddCustomerFilter(customerFilters);
         }
 
         /// <summary>
-        /// 
+        /// 数据过滤
         /// </summary>
         /// <param name="pt"></param>
         /// <returns></returns>
-        public virtual Dictionary<TItemType, TEnumType> GetFilteredData(TParamType pt)
+        public virtual Dictionary<TItemType, TEnumType> FiltingData(TParamType pt)
         {
             Dictionary<TItemType, TEnumType> res = new Dictionary<TItemType, TEnumType>();
 
@@ -298,11 +325,11 @@ namespace DeanZhou.Framework
         }
 
         /// <summary>
-        /// 
+        /// 判断该记录是否应该要获取
         /// </summary>
-        /// <param name="needPolicyType"></param>
-        /// <param name="currEachTypeGetedCount"></param>
-        /// <returns></returns>
+        /// <param name="needPolicyType">需要获取的类型</param>
+        /// <param name="currEachTypeGetedCount">已经获取的条数</param>
+        /// <returns>true 需要 false 不需要</returns>
         protected virtual bool IsValidate(TEnumType needPolicyType, Dictionary<TEnumType, int> currEachTypeGetedCount)
         {
             return EnumTypes.Cast<TEnumType>().Any(enumType => ((enumType.ChangeType<int>() & needPolicyType.ChangeType<int>()) == enumType.ChangeType<int>()) && currEachTypeGetedCount[enumType] < EachTypeMinGetCount[enumType]);

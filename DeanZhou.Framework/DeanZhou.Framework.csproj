@@ -36,6 +36,9 @@
     <Reference Include="Dapper">
       <HintPath>..\packages\Dapper.1.38\lib\net45\Dapper.dll</HintPath>
     </Reference>
+    <Reference Include="FSLib.Extension">
+      <HintPath>..\packages\extension.fishlee.net.1.1.1.1\lib\net40\FSLib.Extension.dll</HintPath>
+    </Reference>
     <Reference Include="PostSharp">
       <HintPath>..\packages\PostSharp.4.0.39\lib\net35-client\PostSharp.dll</HintPath>
       <Private>True</Private>
