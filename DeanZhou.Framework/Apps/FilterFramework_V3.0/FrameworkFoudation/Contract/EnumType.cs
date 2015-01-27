@@ -2,12 +2,8 @@
 
 namespace DeanZhou.Framework
 {
-    //需要获取的最优政策的类型
-    /// <summary>
-    /// 需要获取的最优政策的类型
-    /// </summary>
     [Flags]
-    public enum NeedPolicyType
+    public enum EnumType
     {
         /// <summary>
         /// 适用于高票面价(Day 0 2)
@@ -34,5 +30,4 @@ namespace DeanZhou.Framework
         /// </summary>
         AutoTicket = 16
     }
-
 }

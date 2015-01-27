@@ -58,16 +58,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Apps\FilterFramework_V3.0\FrameworkFoudation\ComplexFilterCore.cs" />
+    <Compile Include="Apps\FilterFramework_V3.0\FrameworkFoudation\Contract\EnumType.cs" />
+    <Compile Include="Apps\FilterFramework_V3.0\FrameworkFoudation\Contract\IFilter.cs" />
+    <Compile Include="Apps\FilterFramework_V3.0\FrameworkFoudation\Contract\IEnumTypeIdentifier.cs" />
+    <Compile Include="Apps\FilterFramework_V3.0\FrameworkImpDemo\EnumTypeIdentifiers\IdentifyString.cs" />
+    <Compile Include="Apps\FilterFramework_V3.0\FrameworkImpDemo\EnumTypes\StringEnumType.cs" />
+    <Compile Include="Apps\FilterFramework_V3.0\FrameworkImpDemo\FilterImps\StringContentFilter.cs" />
+    <Compile Include="Apps\FilterFramework_V3.0\FrameworkImpDemo\FilterImps\StringLenFilter.cs" />
+    <Compile Include="Apps\FilterFramework_V3.0\FrameworkFoudation\SimpleFilterCore.cs" />
     <Compile Include="Apps\ORMFramework\DapperHelper.cs" />
     <Compile Include="CommonExtension\Null.cs" />
     <Compile Include="CommonExtension\DataRowContainer.cs" />
     <Compile Include="CommonExtension\CommonExtension.cs" />
     <Compile Include="Apps\DataWarehouseFramework\DataWarehouse.cs" />
     <Compile Include="Apps\DataWarehouseFramework\StoredDataInfo.cs" />
-    <Compile Include="Apps\FilterFramework\FilterBaseCore.cs" />
-    <Compile Include="Apps\FilterFramework\FinishedType.cs" />
-    <Compile Include="Apps\FilterFramework\PolicyFilter\PolicyFilterCore.cs" />
-    <Compile Include="Apps\FilterFramework\PolicyFilter\NeedPolicyType.cs" />
+    <Compile Include="Apps\FilterFramework_V3.0\FrameworkImpDemo\StringFilterCore.cs" />
     <Compile Include="ThreadPoolExtension\ThreadPoolExtension.cs" />
     <Compile Include="ThreadPoolExtension\MutipleThreadResetEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -76,6 +82,7 @@
     <None Include="DeanZhou.Framework.psproj" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\PostSharp.4.0.39\tools\PostSharp.targets" Condition="Exists('..\packages\PostSharp.4.0.39\tools\PostSharp.targets')" />
   <Target Name="EnsurePostSharpImported" BeforeTargets="BeforeBuild" Condition="'$(PostSharp30Imported)' == ''">

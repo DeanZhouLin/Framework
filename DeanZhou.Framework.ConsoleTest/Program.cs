@@ -10,14 +10,8 @@ namespace DeanZhou.Framework.ConsoleTest
         static void Main(string[] args)
         {
 
-            CustomerFilterCore c = new CustomerFilterCore();
-            c.SetNeedType(NeedGetType.LongLen | NeedGetType.ShortLen);
-            c.SetEachGetCount(2);
-            c.SetMaxCheckCount(5);
-            c.SetWaitingCheckData(new List<string> { "asdfsdf", "12345678", "fd23", "11", "12345", "sfdk2", "23", "3" });
+            var res = StringFilterCore.NewInstance().Test();
 
-
- 
 
             #region 数据缓存仓库测试
 
