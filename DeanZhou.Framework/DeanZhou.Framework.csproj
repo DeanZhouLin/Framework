@@ -59,7 +59,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Apps\FilterFramework_V3.0\FrameworkFoudation\ComplexFilterCore.cs" />
-    <Compile Include="Apps\FilterFramework_V3.0\FrameworkFoudation\Contract\EnumType.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\FrameworkFoudation\Contract\IFilter.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\FrameworkFoudation\Contract\IEnumTypeIdentifier.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\FrameworkImpDemo\EnumTypeIdentifiers\IdentifyString.cs" />
