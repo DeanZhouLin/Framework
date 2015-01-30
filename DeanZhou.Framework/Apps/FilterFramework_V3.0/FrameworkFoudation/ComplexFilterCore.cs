@@ -106,6 +106,25 @@ namespace DeanZhou.Framework
             return this;
         }
 
+        /// <summary>
+        /// 设置对应类型需要获取的最大条数
+        /// </summary>
+        /// <param name="needEnumTypeName"></param>
+        /// <param name="needGetCount"></param>
+        /// <returns></returns>
+        public ComplexFilterCore<TItemType, TEnumType> SetMinGetCount(string needEnumTypeName, int needGetCount)
+        {
+            if (!string.IsNullOrEmpty(needEnumTypeName))
+            {
+                foreach (string str in needEnumTypeName.Split('|').Where(c => !string.IsNullOrEmpty(c)))
+                {
+                    SetMinGetCount(Common.CreateEnum<TEnumType>(str), needGetCount);
+                }
+
+            }
+            return this;
+        }
+
         #endregion
 
         #region RegistEnumTypeIdentifier
@@ -142,6 +161,19 @@ namespace DeanZhou.Framework
             return this;
         }
 
+        /// <summary>
+        /// 注册类型识别器
+        /// </summary>
+        /// <param name="assemblyName"></param>
+        /// <param name="identifierFullClassName"></param>
+        /// <returns></returns>
+        public ComplexFilterCore<TItemType, TEnumType> RegistEnumTypeIdentifier(string assemblyName,
+            string identifierFullClassName)
+        {
+            var instance = Common.CreateIdentifier<TItemType, TEnumType>(assemblyName, identifierFullClassName);
+            return RegistEnumTypeIdentifier(instance);
+        }
+
         #endregion
 
         #region AddFilter
@@ -168,6 +200,18 @@ namespace DeanZhou.Framework
         public ComplexFilterCore<TItemType, TEnumType> AddFilter(params Func<TItemType, bool>[] filters)
         {
             SimpleFilterCore.AddFilter(filters);
+            return this;
+        }
+
+        /// <summary>
+        /// 添加自定义过滤器
+        /// </summary>
+        /// <param name="assemblyName"></param>
+        /// <param name="filterFullClassNames"></param>
+        /// <returns></returns>
+        public ComplexFilterCore<TItemType, TEnumType> AddFilter(string assemblyName, params string[] filterFullClassNames)
+        {
+            SimpleFilterCore.AddFilter(assemblyName, filterFullClassNames);
             return this;
         }
 
@@ -367,6 +411,25 @@ namespace DeanZhou.Framework
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="needEnumTypeName"></param>
+        /// <param name="needGetCount"></param>
+        /// <returns></returns>
+        public ComplexFilterCore<TItemType, TParamType, TEnumType> SetMinGetCount(string needEnumTypeName,
+            int needGetCount)
+        {
+            if (!string.IsNullOrEmpty(needEnumTypeName))
+            {
+                foreach (string str in needEnumTypeName.Split('|').Where(c => !string.IsNullOrEmpty(c)))
+                {
+                    SetMinGetCount(Common.CreateEnum<TEnumType>(str), needGetCount);
+                }
+            }
+            return this;
+        }
+
         #endregion
 
         #region RegistEnumTypeIdentifier
@@ -380,7 +443,7 @@ namespace DeanZhou.Framework
         /// 注册类型识别器
         /// </summary>
         /// <param name="enumTypeIdentifier">类型识别器</param>
-        protected ComplexFilterCore<TItemType, TParamType, TEnumType> RegistEnumTypeIdentifier(Func<TItemType, TParamType, TEnumType> enumTypeIdentifier)
+        public ComplexFilterCore<TItemType, TParamType, TEnumType> RegistEnumTypeIdentifier(Func<TItemType, TParamType, TEnumType> enumTypeIdentifier)
         {
             //初始化对象类型识别器
             EnumTypeIdentifier = enumTypeIdentifier;
@@ -415,7 +478,7 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 添加自定义过滤器
         /// </summary>
-        protected ComplexFilterCore<TItemType, TParamType, TEnumType> AddFilter(params IFilter<TItemType, TParamType>[] filters)
+        public ComplexFilterCore<TItemType, TParamType, TEnumType> AddFilter(params IFilter<TItemType, TParamType>[] filters)
         {
             SimpleFilterCore.AddFilter(filters);
             return this;
@@ -426,12 +489,17 @@ namespace DeanZhou.Framework
         /// </summary>
         /// <param name="filters"></param>
         /// <returns></returns>
-        protected ComplexFilterCore<TItemType, TParamType, TEnumType> AddFilter(params Func<TItemType, TParamType, bool>[] filters)
+        public ComplexFilterCore<TItemType, TParamType, TEnumType> AddFilter(params Func<TItemType, TParamType, bool>[] filters)
         {
             SimpleFilterCore.AddFilter(filters);
             return this;
         }
 
+        public ComplexFilterCore<TItemType, TParamType, TEnumType> AddFilter(string assemblyName, params string[] filterFullClassNames)
+        {
+            SimpleFilterCore.AddFilter(assemblyName, filterFullClassNames);
+            return this;
+        }
         #endregion
 
         #region GetFilteredResult
@@ -469,13 +537,16 @@ namespace DeanZhou.Framework
                     throw new Exception("未注册类型识别器");
                 }
                 TEnumType et = EnumTypeIdentifier(itemType, pt);
-                IEnumerable<TEnumType> validEnums = EnumTypes.Where(targetType => (et.ChangeType<int>() & targetType.ChangeType<int>()) == targetType.ChangeType<int>()).ToList();
+                IEnumerable<TEnumType> validEnums = EnumTypes.
+                    Where(targetType => (et.ChangeType<int>() & targetType.ChangeType<int>())
+                        == targetType.ChangeType<int>()).ToList();
 
                 //3 设置当前检测条数
                 currCheckedCount++;
 
                 //4 根据分类类型，判断该对象是否应该添加
-                if (EachTypeMinGetCount.All(c => c.Value == 0) || validEnums.Any(enumType => currEachTypeGetedCount[enumType] < EachTypeMinGetCount[enumType]))
+                if (EachTypeMinGetCount.All(c => c.Value == 0) ||
+                    validEnums.Any(enumType => currEachTypeGetedCount[enumType] < EachTypeMinGetCount[enumType]))
                 {
                     //5 更新当前分类的获取数目
                     foreach (TEnumType targetType in validEnums)

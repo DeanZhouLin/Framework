@@ -2,15 +2,23 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace DeanZhou.Framework.ConsoleTest
 {
+    public class T
+    {
+        public int A()
+        {
+            return 1;
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
         {
-
-            var res = StringFilterCore.NewInstance().Test();
+            var res = StringFilterCore.NewInstanceByString().Test();
 
 
             #region 数据缓存仓库测试

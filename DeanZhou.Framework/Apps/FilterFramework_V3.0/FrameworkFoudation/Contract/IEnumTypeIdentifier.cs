@@ -1,4 +1,6 @@
-﻿namespace DeanZhou.Framework
+﻿using System;
+
+namespace DeanZhou.Framework
 {
     /// <summary>
     /// 类型识别器接口

@@ -1,9 +1,11 @@
-﻿namespace DeanZhou.Framework
+﻿using System;
+
+namespace DeanZhou.Framework
 {
     /// <summary>
     /// 过滤器接口
     /// </summary>
-    public interface IFilter<in TItemType, in TParamType>
+    public interface IFilter<in TItemType, in TParamType> 
         where TItemType : class
         where TParamType : class
     {
@@ -16,7 +18,7 @@
         bool DoFilter(TItemType itemType, TParamType paramType);
     }
 
-    public interface IFilter<in TItemType>
+    public interface IFilter<in TItemType> 
         where TItemType : class
     {
         /// <summary>

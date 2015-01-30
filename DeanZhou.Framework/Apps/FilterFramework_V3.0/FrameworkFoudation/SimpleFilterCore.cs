@@ -66,6 +66,27 @@ namespace DeanZhou.Framework
             }
             return this;
         }
+
+        /// <summary>
+        /// 添加自定义过滤器
+        /// </summary>
+        /// <param name="assemblyName"></param>
+        /// <param name="filterFullClassNames"></param>
+        /// <returns></returns>
+        public SimpleFilterCore<TItemType> AddFilter(string assemblyName, params string[] filterFullClassNames)
+        {
+            if (filterFullClassNames == null)
+            {
+                return this;
+            }
+            foreach (var fullClassName in filterFullClassNames)
+            {
+                var instance = Common.CreateIFilter<TItemType>(assemblyName, fullClassName);
+                AddFilter(instance);
+            }
+            return this;
+        }
+
     }
 
     /// <summary>
@@ -133,6 +154,27 @@ namespace DeanZhou.Framework
             }
             return this;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="assemblyName"></param>
+        /// <param name="filterFullClassNames"></param>
+        /// <returns></returns>
+        public SimpleFilterCore<TItemType, TParamType> AddFilter(string assemblyName, params string[] filterFullClassNames)
+        {
+            if (filterFullClassNames == null)
+            {
+                return this;
+            }
+            foreach (var fullClassName in filterFullClassNames)
+            {
+                var instance = Common.CreateIFilter<TItemType, TParamType>(assemblyName, fullClassName);
+                AddFilter(instance);
+            }
+            return this;
+        }
+
     }
 
 }
