@@ -6,18 +6,13 @@ using System.Reflection;
 
 namespace DeanZhou.Framework.ConsoleTest
 {
-    public class T
-    {
-        public int A()
-        {
-            return 1;
-        }
-    }
 
     class Program
     {
         static void Main(string[] args)
         {
+
+            TestRandomNum();
 
             //初始化过滤器
             ComplexFilterCore<string, DemoStringEnumType> demoStrFilterCore = new ComplexFilterCore<string, DemoStringEnumType>();
@@ -80,6 +75,34 @@ namespace DeanZhou.Framework.ConsoleTest
 
             #endregion
 
+        }
+
+        private static void TestRandomNum()
+        {
+            List<int> res = new List<int>();
+            for (int i = 0; i < 10; i++)
+            {
+                res.Add(RandomNumberCore.GetRandomNumber(1, 66));
+            }
+
+            Console.WriteLine(string.Join(",", res));
+
+            res.Clear();
+            RandomNumberCore.InitRandomArray();
+            for (int i = 0; i < 10; i++)
+            {
+                res.Add(RandomNumberCore.GetRandomNumber(1, 66));
+            }
+            Console.WriteLine(string.Join(",", res));
+            res.Clear();
+
+            for (int i = 0; i < 10; i++)
+            {
+                res.Add(RandomNumberCore.GetRandomNumber(67, 189));
+            }
+            Console.WriteLine(string.Join(",", res));
+
+            Console.ReadKey();
         }
 
         /// <summary>

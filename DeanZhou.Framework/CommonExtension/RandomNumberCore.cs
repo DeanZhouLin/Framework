@@ -71,5 +71,13 @@ namespace DeanZhou.Framework
                 return res;
             }
         }
+
+        /// <summary>
+        /// 初始化随机数组
+        /// </summary>
+        public static void InitRandomArray()
+        {
+            new Random().NextBytes(_staticNumArr);
+        }
     }
 }
