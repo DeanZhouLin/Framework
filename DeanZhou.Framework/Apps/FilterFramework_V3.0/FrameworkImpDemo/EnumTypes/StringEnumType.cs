@@ -6,14 +6,14 @@ namespace DeanZhou.Framework
     public enum DemoStringEnumType
     {
         /// <summary>
-        /// 长度大于2
+        /// 长度大于3
         /// </summary>
         LongLen = 1,
 
         /// <summary>
-        /// 纯数字
+        /// 包含1
         /// </summary>
-        AllNumber = 2, 
+        HasOne = 2, 
 
         /// <summary>
         /// 无效值

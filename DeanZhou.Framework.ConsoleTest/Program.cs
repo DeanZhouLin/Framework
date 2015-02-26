@@ -12,29 +12,32 @@ namespace DeanZhou.Framework.ConsoleTest
         static void Main(string[] args)
         {
 
-            TestRandomNum();
+            //TestRandomNum();
 
             //初始化过滤器
             ComplexFilterCore<string, DemoStringEnumType> demoStrFilterCore = new ComplexFilterCore<string, DemoStringEnumType>();
 
-            //初始化 AllNumber 1 LongLen 2
-            demoStrFilterCore.SetMinGetCount(DemoStringEnumType.AllNumber, 1);
-            demoStrFilterCore.SetMinGetCount(DemoStringEnumType.LongLen, 2);
+            //初始化 HasOne 2 LongLen 1
+            demoStrFilterCore.SetMinGetCount(DemoStringEnumType.LongLen, 1);
+            demoStrFilterCore.SetMinGetCount(DemoStringEnumType.HasOne, 2);
 
-            //注册类型识别器 识别 DemoStringEnumType
+            //注册类型识别器 识别特性 DemoStringEnumType
             demoStrFilterCore.RegistEnumTypeIdentifier(new IdentifyDemoString());
 
-            //添加过滤器 过滤没有包含1且不包含a的字符串
+            //添加过滤器 过滤掉不是整数的字符串
             demoStrFilterCore.AddFilter(new DemoStringContentFilter());
 
             //初始化数据源
-            var ls = new List<string> { "123", "a123", "b", "35", "16", "a32" };
+            var ls = new List<string> { "123", "246", "b", "15", "16", "a32" };
 
             //执行过滤
             var result = demoStrFilterCore.GetFilteredResult(ls);
 
-            var res = StringFilterCore.NewInstanceByString().Test();
+            //打印结果
+            Console.WriteLine(string.Join(",", result.Keys));
 
+           
+            Console.ReadKey();
 
             #region 数据缓存仓库测试
 
