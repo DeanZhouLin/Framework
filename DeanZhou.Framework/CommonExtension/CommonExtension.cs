@@ -159,7 +159,7 @@ namespace DeanZhou.Framework
                 T t = (T)Activator.CreateInstance(typeof(T));
                 foreach (DataColumn dc in dt.Columns)
                 {
-                    PropertyInfo field = t.GetType().GetProperty(dc.ColumnName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                    PropertyInfo field = t.GetType().GetProperty(dc.ColumnName);
 
                     if (field == null)
                         continue;

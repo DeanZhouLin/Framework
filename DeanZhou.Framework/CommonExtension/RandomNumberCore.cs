@@ -60,6 +60,12 @@ namespace DeanZhou.Framework
                 //当前取随机数索引递增
                 _staticNumIndex++;
 
+                //每取255次就重新填充一下随机数组
+                if (_staticNumIndex >= 255)
+                {
+                    InitRandomArray();
+                }
+
                 //获取有效索引
                 _staticNumIndex = _staticNumIndex % 255;
 

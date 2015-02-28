@@ -12,7 +12,19 @@ namespace DeanZhou.Framework.ConsoleTest
         static void Main(string[] args)
         {
 
-            //TestRandomNum();
+            #region 反射对象属性测试
+            Person p = new Person();
+            TestReflectProps(p);
+            Console.ReadLine();
+            #endregion
+
+            #region 随机数测试
+
+            TestRandomNum();
+
+            #endregion
+
+            #region 过滤器测试
 
             //初始化过滤器
             ComplexFilterCore<string, DemoStringEnumType> demoStrFilterCore = new ComplexFilterCore<string, DemoStringEnumType>();
@@ -36,8 +48,10 @@ namespace DeanZhou.Framework.ConsoleTest
             //打印结果
             Console.WriteLine(string.Join(",", result.Keys));
 
-           
+
             Console.ReadKey();
+
+            #endregion
 
             #region 数据缓存仓库测试
 
@@ -80,9 +94,18 @@ namespace DeanZhou.Framework.ConsoleTest
 
         }
 
+        private static void TestReflectProps<T>(T t)
+        {
+            foreach (PropertyInfo p in t.GetType().GetProperties())
+            {
+                Console.WriteLine("Name:{0} Value:{1}", p.Name, p.GetValue(t));
+            }
+        }
+
         private static void TestRandomNum()
         {
             List<int> res = new List<int>();
+            Console.WriteLine("生成10个1-66之间的随机数");
             for (int i = 0; i < 10; i++)
             {
                 res.Add(RandomNumberCore.GetRandomNumber(1, 66));
@@ -92,16 +115,17 @@ namespace DeanZhou.Framework.ConsoleTest
 
             res.Clear();
             RandomNumberCore.InitRandomArray();
+            Console.WriteLine("初始化随机数组后再次生成10个1-66之间的随机数");
             for (int i = 0; i < 10; i++)
             {
                 res.Add(RandomNumberCore.GetRandomNumber(1, 66));
             }
             Console.WriteLine(string.Join(",", res));
             res.Clear();
-
+            Console.WriteLine("生成10个67-18239之间的随机数");
             for (int i = 0; i < 10; i++)
             {
-                res.Add(RandomNumberCore.GetRandomNumber(67, 189));
+                res.Add(RandomNumberCore.GetRandomNumber(67, 18239));
             }
             Console.WriteLine(string.Join(",", res));
 
@@ -139,7 +163,7 @@ namespace DeanZhou.Framework.ConsoleTest
 
             public int Int_id
             {
-                get { return id.ChangeType<int>(); }
+                get { return id.TryChangeType(0); }
             }
             public string Name { get; set; }
         }
