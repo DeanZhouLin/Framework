@@ -33,7 +33,9 @@ namespace DeanZhou.Framework
 
             //获取随机数字数组
             _staticNumArr = new byte[256];
-            new Random().NextBytes(_staticNumArr);
+
+            //初始化随机数组
+            InitRandomArray();
         }
 
         /// <summary>

@@ -12,16 +12,16 @@ namespace DeanZhou.Framework.ConsoleTest
         static void Main(string[] args)
         {
 
-            #region 反射对象属性测试
-            Person p = new Person();
-            TestReflectProps(p);
-            Console.ReadLine();
-            #endregion
-
             #region 随机数测试
 
             TestRandomNum();
 
+            #endregion
+
+            #region 反射对象属性测试
+            Person p = new Person();
+            TestReflectProps(p);
+            Console.ReadLine();
             #endregion
 
             #region 过滤器测试
@@ -104,6 +104,12 @@ namespace DeanZhou.Framework.ConsoleTest
 
         private static void TestRandomNum()
         {
+            Console.WriteLine("同时生成10个随机数");
+            for (int i = 0; i < 10; i++)
+            {
+                Console.WriteLine(new Random().Next());
+            }
+
             List<int> res = new List<int>();
             Console.WriteLine("生成10个1-66之间的随机数");
             for (int i = 0; i < 10; i++)
