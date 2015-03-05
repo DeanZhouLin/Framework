@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Dynamic;
 using System.Reflection;
 
 namespace DeanZhou.Framework.ConsoleTest
@@ -11,6 +12,53 @@ namespace DeanZhou.Framework.ConsoleTest
     {
         static void Main(string[] args)
         {
+            #region 动态类型测试
+
+            dynamic dynamicobj = new LocalCacheContainer();
+            dynamicobj.Name = "Learning Hard";
+            dynamicobj.Age = "24";
+            var res = dynamicobj.Age;
+            Console.WriteLine("fsadf");
+
+            DynamicObjectTest dot = new DynamicObjectTest();
+
+            dot.LocalCache.Person = new Person
+            {
+                id = "1",
+                Name = "zl"
+            };
+
+            dot.LocalCache.OtherInfo = "234";
+
+            Person p1 = dot.LocalCache.Person1 as Person;
+
+            Console.WriteLine(dot.LocalCache.Person.Name);
+            Console.WriteLine(dot.LocalCache.OtherInfo);
+
+
+            Console.ReadLine();
+            #endregion
+
+            #region 反射输出对象属性测试
+            Group gp = new Group
+            {
+                GroupID = 1,
+                GroupName = "TestGroupName",
+                PS = new List<Person>
+                {
+                    new Person{id = "1",Name = "n1"},
+                    new Person{id = "2",Name = "n2"},
+                    new Person{id = "3",Name = "n3"}
+                },
+                Mark = "这是一个测试组"
+            };
+
+            foreach (string str in gp.GetReflectPropsValue().Split('|'))
+            {
+                Console.WriteLine(str);
+            }
+            Console.ReadLine();
+            #endregion
 
             #region 随机数测试
 
@@ -105,9 +153,10 @@ namespace DeanZhou.Framework.ConsoleTest
         private static void TestRandomNum()
         {
             Console.WriteLine("同时生成10个随机数");
+            Random rand = new Random();
             for (int i = 0; i < 10; i++)
             {
-                Console.WriteLine(new Random().Next());
+                Console.WriteLine(rand.Next(1, 10));
             }
 
             List<int> res = new List<int>();
@@ -165,6 +214,7 @@ namespace DeanZhou.Framework.ConsoleTest
 
         public class Person
         {
+
             public string id { get; set; }
 
             public int Int_id
@@ -172,6 +222,50 @@ namespace DeanZhou.Framework.ConsoleTest
                 get { return id.TryChangeType(0); }
             }
             public string Name { get; set; }
+        }
+
+        public class Group
+        {
+            public int GroupID { get; set; }
+
+            public string GroupName { get; set; }
+
+            public List<Person> PS { get; set; }
+
+            public string Mark { get; set; }
+        }
+
+
+        public class DynamicObjectTest
+        {
+            public dynamic LocalCache { get; private set; }
+
+            public DynamicObjectTest()
+            {
+                LocalCache = new ExpandoObject();
+            }
+        }
+
+        /// <summary>
+        /// 本地缓存容器
+        /// </summary>
+        class LocalCacheContainer : DynamicObject
+        {
+            readonly Dictionary<string, object> _dic = new Dictionary<string, object>();
+
+            public override bool TryGetMember(GetMemberBinder binder, out object result)
+            {
+                var name = binder.Name;
+                _dic.TryGetValue(name, out result);
+                return true;
+            }
+
+            public override bool TrySetMember(SetMemberBinder binder, object value)
+            {
+                var name = binder.Name;
+                _dic[name] = value;
+                return true;
+            }
         }
     }
 }

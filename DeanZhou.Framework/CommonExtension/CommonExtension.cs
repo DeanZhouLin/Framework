@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -223,5 +224,54 @@ namespace DeanZhou.Framework
             return entityList;
         }
 
+        /// <summary>
+        /// 反射输出对象的所有属性的值
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="space"></param>
+        /// <returns></returns>
+        public static string GetReflectPropsValue<T>(this T t, string space = "") where T : class
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (PropertyInfo p in t.GetType().GetProperties())
+            {
+                try
+                {
+                    if (p.GetValue(t) is IList)
+                    {
+                        sb.Append(string.Format("{1}<b>{0}</b>:|", p.Name, space));
+                        IList ls = p.GetValue(t) as IList;
+                        if (ls != null && ls.Count > 0)
+                        {
+                            foreach (var l in ls)
+                            {
+                                sb.Append(l.GetReflectPropsValue(space + "        "));
+                                sb.Append("|");
+                            }
+                            sb.Append("|");
+                        }
+                        else
+                        {
+                            sb.Append(string.Format("{0}Count:0|",
+                                space + "        "));
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(string.Format("{2}[{0}]:{1}|", p.Name, p.GetValue(t).ToString().Replace("|", " "), space));
+                    }
+                }
+                catch (Exception)
+                {
+                }
+            }
+            return sb.ToString().Trim('|');
+        }
+
+        public static string GetLSCountStr(IList source)
+        {
+            return source == null ? "null" : source.Count.ToString();
+        }
     }
 }

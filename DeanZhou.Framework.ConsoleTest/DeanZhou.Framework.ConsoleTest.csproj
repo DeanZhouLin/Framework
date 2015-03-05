@@ -33,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="PostSharp">
       <HintPath>..\packages\PostSharp.4.0.39\lib\net35-client\PostSharp.dll</HintPath>
       <Private>True</Private>
