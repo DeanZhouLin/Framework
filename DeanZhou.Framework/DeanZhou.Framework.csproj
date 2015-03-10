@@ -36,26 +36,18 @@
     <Reference Include="Dapper">
       <HintPath>..\packages\Dapper.1.38\lib\net45\Dapper.dll</HintPath>
     </Reference>
-    <Reference Include="FSLib.Extension">
-      <HintPath>..\packages\extension.fishlee.net.1.1.1.1\lib\net40\FSLib.Extension.dll</HintPath>
-    </Reference>
-    <Reference Include="PostSharp, Version=4.0.43.0, Culture=neutral, PublicKeyToken=b13fd38b8f9c99d7, processorArchitecture=MSIL">
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\PostSharp.4.0.43\lib\net35-client\PostSharp.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>JR\DLL\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="PostSharp.Patterns.Common, Version=4.0.43.0, Culture=neutral, PublicKeyToken=e7f631e6ce13f078, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\PostSharp.Patterns.Common.4.0.43\lib\net40\PostSharp.Patterns.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="PostSharp.Patterns.Threading, Version=4.0.43.0, Culture=neutral, PublicKeyToken=e7f631e6ce13f078, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\PostSharp.Patterns.Threading.4.0.43\lib\net45\PostSharp.Patterns.Threading.dll</HintPath>
+      <HintPath>JR\DLL\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -81,6 +73,40 @@
     <Compile Include="Apps\DataWarehouseFramework\DataWarehouse.cs" />
     <Compile Include="Apps\DataWarehouseFramework\StoredDataInfo.cs" />
     <Compile Include="CommonExtension\RandomNumberCore.cs" />
+    <Compile Include="JR\AppEnvironment.cs" />
+    <Compile Include="JR\Config\AppSettingsHelper.cs" />
+    <Compile Include="JR\Data\SqlHelper.cs" />
+    <Compile Include="JR\Extensions\ArrayExtensions.cs" />
+    <Compile Include="JR\Extensions\CollectionExtensions.cs" />
+    <Compile Include="JR\Extensions\CombinedException.cs" />
+    <Compile Include="JR\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="JR\Extensions\DirectoryInfoExtensions.cs" />
+    <Compile Include="JR\Extensions\EnumerableExtensions.cs" />
+    <Compile Include="JR\Extensions\EnumExtensions.cs" />
+    <Compile Include="JR\Extensions\FileInfoExtensions.cs" />
+    <Compile Include="JR\Extensions\IntExtensions.cs" />
+    <Compile Include="JR\Extensions\ListExtensions.cs" />
+    <Compile Include="JR\Extensions\NameValueCollectionExtensions.cs" />
+    <Compile Include="JR\Extensions\ObjectExtensions.cs" />
+    <Compile Include="JR\Extensions\StringExtensions.cs" />
+    <Compile Include="JR\Extensions\TypeExtensions.cs" />
+    <Compile Include="JR\Extensions\XmlNodeExtensions.cs" />
+    <Compile Include="JR\Security\EncryptionHelper.cs" />
+    <Compile Include="JR\Security\JinRiEncryptTool.cs" />
+    <Compile Include="JR\Utils\CodeTimer.cs" />
+    <Compile Include="JR\Utils\FtpHelper.cs" />
+    <Compile Include="JR\Utils\HttpHelper.cs" />
+    <Compile Include="JR\Utils\MailHelper.cs" />
+    <Compile Include="JR\Utils\PageItem.cs" />
+    <Compile Include="JR\Utils\PinyinHelper.cs" />
+    <Compile Include="JR\Utils\RandomHelper.cs" />
+    <Compile Include="JR\Utils\SerializerHelper.cs" />
+    <Compile Include="JR\Utils\Utility.cs" />
+    <Compile Include="JR\Utils\XmlHelper.cs" />
+    <Compile Include="JR\Utils\ZipHelper.cs" />
+    <Compile Include="JR\Validation\RegexMatchHelper.cs" />
+    <Compile Include="JR\Web\JsHelper.cs" />
+    <Compile Include="JR\Web\MessageBox.cs" />
     <Compile Include="ThreadPoolExtension\ThreadPoolExtension.cs" />
     <Compile Include="ThreadPoolExtension\MutipleThreadResetEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -90,7 +116,10 @@
     <None Include="Apps\ORMFramework\packages.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="JR\DLL\ICSharpCode.SharpZipLib.dll" />
+    <Content Include="JR\DLL\Newtonsoft.Json.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\PostSharp.4.0.43\tools\PostSharp.targets" Condition="Exists('..\packages\PostSharp.4.0.43\tools\PostSharp.targets')" />
   <Target Name="EnsurePostSharpImported" BeforeTargets="BeforeBuild" Condition="'$(PostSharp30Imported)' == ''">
