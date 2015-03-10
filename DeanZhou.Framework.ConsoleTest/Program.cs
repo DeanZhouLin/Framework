@@ -12,6 +12,18 @@ namespace DeanZhou.Framework.ConsoleTest
     {
         static void Main(string[] args)
         {
+            #region 引用类型测试
+
+            RTest rt = new RTest();
+            InnerC ic = new InnerC();
+            ic.T(rt);
+            Console.WriteLine(rt.i);
+
+            ic.T(ref rt);
+            Console.WriteLine(rt.i);
+            Console.ReadLine();
+            #endregion
+
             #region 动态类型测试
 
             dynamic dynamicobj = new LocalCacheContainer();
@@ -265,6 +277,24 @@ namespace DeanZhou.Framework.ConsoleTest
                 var name = binder.Name;
                 _dic[name] = value;
                 return true;
+            }
+        }
+
+        public class RTest
+        {
+            public int i = 0;
+        }
+
+        public class InnerC
+        {
+            public void T(RTest t)
+            {
+                t.i = 10;
+            }
+
+            public void T(ref RTest t)
+            {
+                t.i = 100;
             }
         }
     }
