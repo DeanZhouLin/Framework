@@ -53,15 +53,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Apps\FilterFramework_V3.0\FrameworkFoudation\Common.cs" />
-    <Compile Include="Apps\FilterFramework_V3.0\FrameworkFoudation\ComplexFilterCore.cs" />
-    <Compile Include="Apps\FilterFramework_V3.0\FrameworkFoudation\Contract\IFilter.cs" />
-    <Compile Include="Apps\FilterFramework_V3.0\FrameworkFoudation\Contract\IEnumTypeIdentifier.cs" />
+    <Compile Include="Apps\FilterFramework_V3.0\Common.cs" />
+    <Compile Include="Apps\FilterFramework_V3.0\ComplexFilterCore.cs" />
+    <Compile Include="Apps\FilterFramework_V3.0\Contract\IFilter.cs" />
+    <Compile Include="Apps\FilterFramework_V3.0\Contract\IEnumTypeIdentifier.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\FrameworkImpDemo\EnumTypeIdentifiers\IdentifyDemoString.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\FrameworkImpDemo\EnumTypeIdentifiers\IdentifyString.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\FrameworkImpDemo\EnumTypes\StringEnumType.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\FrameworkImpDemo\FilterImps\DemoStringContentFilter.cs" />
-    <Compile Include="Apps\FilterFramework_V3.0\FrameworkFoudation\SimpleFilterCore.cs" />
+    <Compile Include="Apps\FilterFramework_V3.0\SimpleFilterCore.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\FrameworkImpDemo\FilterImps\StringContentFilter.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\FrameworkImpDemo\FilterImps\StringLenFilter.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\FrameworkImpDemo\StringFilterCore.cs" />
