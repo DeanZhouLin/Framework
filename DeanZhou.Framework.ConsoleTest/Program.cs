@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Reflection;
+using System.Threading;
 
 namespace DeanZhou.Framework.ConsoleTest
 {
@@ -12,6 +13,16 @@ namespace DeanZhou.Framework.ConsoleTest
     {
         static void Main(string[] args)
         {
+
+            DataBufferPool<int> dp = new DataBufferPool<int>(Console.WriteLine);
+            int iu = 0;
+            while (iu < 20)
+            {
+                iu++;
+                dp.AddItem(iu);
+            }
+            Console.ReadLine();
+
             #region 引用类型测试
 
             RTest rt = new RTest();

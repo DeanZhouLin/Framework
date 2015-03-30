@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using DeanZhou.Framework;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,6 +13,8 @@ namespace UnitTestCore
         [TestMethod]
         public void Test()
         {
+
+
             RequestBase rb = new RequestBase();
             rb.BindLocalCache("intc", s => GetSourceCacheInt(s[0].TryChangeType(0)), 3);
             rb.BindLocalCache("person", s => GetSourceCachePerson(), null);

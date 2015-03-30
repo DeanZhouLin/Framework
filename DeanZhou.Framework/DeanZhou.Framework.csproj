@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Apps\DataBufferPool\DataBufferPool.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\Common.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\ComplexFilterCore.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\IFilter.cs" />
