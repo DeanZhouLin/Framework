@@ -21,7 +21,7 @@ namespace DeanZhou.Framework
         /// 检测当前政策行是否需要添加
         /// </summary>
         /// <param name="it"></param>
-        public bool CheckCurrData(TItemType it)
+        public bool DoFilter(TItemType it)
         {
             return Filters == null || Filters.GetInvocationList().All(x => x.DynamicInvoke(it).ChangeType<bool>());
         }
@@ -109,7 +109,7 @@ namespace DeanZhou.Framework
         /// </summary>
         /// <param name="it"></param>
         /// <param name="pt"></param>
-        public bool CheckCurrData(TItemType it, TParamType pt)
+        public bool DoFilter(TItemType it, TParamType pt)
         {
             return Filters == null || Filters.GetInvocationList().All(x => x.DynamicInvoke(it, pt).ChangeType<bool>());
         }

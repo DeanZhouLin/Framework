@@ -3,12 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace DeanZhou.Framework
 {
@@ -81,13 +79,7 @@ namespace DeanZhou.Framework
         public static DataTable CloneTable(this DataTable sourceTable)
         {
             if (sourceTable == null) return null;
-
-            DataTable newTable = sourceTable.Clone();
-            foreach (DataRow row in sourceTable.Rows)
-            {
-                newTable.ImportRow(row);
-            }
-            return newTable;
+            return sourceTable.Copy();
         }
 
         //判断字符串是否是数字
@@ -236,42 +228,44 @@ namespace DeanZhou.Framework
             StringBuilder sb = new StringBuilder();
             foreach (PropertyInfo p in t.GetType().GetProperties())
             {
-                try
+                if (p.GetValue(t) is IList)
                 {
-                    if (p.GetValue(t) is IList)
+                    sb.Append(string.Format("{1}<b>{0}</b>:|", p.Name, space));
+                    IList ls = p.GetValue(t) as IList;
+                    if (ls != null && ls.Count > 0)
                     {
-                        sb.Append(string.Format("{1}<b>{0}</b>:|", p.Name, space));
-                        IList ls = p.GetValue(t) as IList;
-                        if (ls != null && ls.Count > 0)
+                        foreach (var l in ls)
                         {
-                            foreach (var l in ls)
-                            {
-                                sb.Append(l.GetReflectPropsValue(space + "        "));
-                                sb.Append("|");
-                            }
+                            sb.Append(l.GetReflectPropsValue(space + "        "));
                             sb.Append("|");
                         }
-                        else
-                        {
-                            sb.Append(string.Format("{0}Count:0|",
-                                space + "        "));
-                        }
+                        sb.Append("|");
                     }
                     else
                     {
-                        sb.Append(string.Format("{2}[{0}]:{1}|", p.Name, p.GetValue(t).ToString().Replace("|", " "), space));
+                        sb.Append(string.Format("{0}Count:0|",
+                            space + "        "));
                     }
                 }
-                catch (Exception)
+                else
                 {
+                    sb.Append(string.Format("{2}[{0}]:{1}|", p.Name, p.GetValue(t).ToString().Replace("|", " "), space));
                 }
             }
             return sb.ToString().Trim('|');
         }
 
-        public static string GetLSCountStr(IList source)
+        /// <summary>
+        /// 判断枚举是否包含子项
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sourceItem"></param>
+        /// <param name="targetItem"></param>
+        /// <returns></returns>
+        public static bool HasItem<T>(this T sourceItem, T targetItem) where T : struct
         {
-            return source == null ? "null" : source.Count.ToString();
+            return (sourceItem.ChangeType<int>() & targetItem.ChangeType<int>()) == targetItem.ChangeType<int>();
         }
+
     }
 }
