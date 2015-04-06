@@ -13,8 +13,12 @@ namespace UnitTestCore
         [TestMethod]
         public void Test()
         {
-
-
+            HttpCore hc = new HttpCore();
+            hc.SetUrl("http://search.51job.com/jobsearch/search_result.php?jobarea=070500&keyword={0}&curr_page={1}", "C#", 1);
+            var res = hc.GetHtml();
+            var tres = hc.SelectNodesHtml(res, "//*[@id='resultList']/tr[@class='tr0']");
+            Console.WriteLine(tres);
+            Console.ReadLine();
             RequestBase rb = new RequestBase();
             rb.BindLocalCache("intc", s => GetSourceCacheInt(s[0].TryChangeType(0)), 3);
             rb.BindLocalCache("person", s => GetSourceCachePerson(), null);

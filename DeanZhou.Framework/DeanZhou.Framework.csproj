@@ -39,13 +39,17 @@
       <HintPath>..\packages\Dapper.1.40\lib\net45\Dapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>JR\DLL\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>RefrenceDll\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>JR\DLL\Newtonsoft.Json.dll</HintPath>
+      <HintPath>RefrenceDll\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -60,6 +64,13 @@
     <Compile Include="Apps\FilterFramework_V3.0\ComplexFilterCore.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\IFilter.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\IEnumTypeIdentifier.cs" />
+    <Compile Include="Apps\HttpHelper\FrameWork\AsynchronousRegex.cs" />
+    <Compile Include="Apps\HttpHelper\HttpCore.cs" />
+    <Compile Include="Apps\HttpHelper\FrameWork\HttpHelper.cs" />
+    <Compile Include="Apps\HttpHelper\FrameWork\HttpItem.cs" />
+    <Compile Include="Apps\HttpHelper\FrameWork\HttpResult.cs" />
+    <Compile Include="Apps\HttpHelper\FrameWork\PostDataType.cs" />
+    <Compile Include="Apps\HttpHelper\FrameWork\ResultType.cs" />
     <Compile Include="Demos\FrameworkImpDemo\EnumTypeIdentifiers\IdentifyDemoString.cs" />
     <Compile Include="Demos\FrameworkImpDemo\EnumTypeIdentifiers\IdentifyString.cs" />
     <Compile Include="Demos\FrameworkImpDemo\EnumTypes\StringEnumType.cs" />
@@ -110,17 +121,18 @@
     <Compile Include="JR\Validation\RegexMatchHelper.cs" />
     <Compile Include="JR\Web\JsHelper.cs" />
     <Compile Include="JR\Web\MessageBox.cs" />
-    <Compile Include="ThreadPoolExtension\ThreadPoolExtension.cs" />
-    <Compile Include="ThreadPoolExtension\MutipleThreadResetEvent.cs" />
+    <Compile Include="Apps\ThreadPoolExtension\ThreadPoolExtension.cs" />
+    <Compile Include="Apps\ThreadPoolExtension\MutipleThreadResetEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Apps\ORMFramework\packages.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="JR\DLL\ICSharpCode.SharpZipLib.dll" />
     <Content Include="JR\DLL\Newtonsoft.Json.dll" />
+    <Content Include="RefrenceDll\ICSharpCode.SharpZipLib.dll" />
+    <Content Include="RefrenceDll\Newtonsoft.Json.dll" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apps\DataBufferPool\" />

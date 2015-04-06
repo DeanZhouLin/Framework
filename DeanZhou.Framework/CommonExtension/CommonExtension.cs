@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace DeanZhou.Framework
 {
@@ -267,5 +268,14 @@ namespace DeanZhou.Framework
             return (sourceItem.ChangeType<int>() & targetItem.ChangeType<int>()) == targetItem.ChangeType<int>();
         }
 
+        public static string ConvertToJson(this object obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
+
+        public static T ConvertToObject<T>(this string strJson)
+        {
+            return JsonConvert.DeserializeObject<T>(strJson);
+        }
     }
 }
