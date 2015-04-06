@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -276,6 +277,29 @@ namespace DeanZhou.Framework
         public static T ConvertToObject<T>(this string strJson)
         {
             return JsonConvert.DeserializeObject<T>(strJson);
+        }
+
+        /// <summary>
+        /// 字节数组生成图片
+        /// </summary>
+        /// <param name="bytes">字节数组</param>
+        /// <returns>图片</returns>
+        public static Image ByteArrayToImage(this byte[] bytes)
+        {
+            if (bytes == null)
+            {
+                return null;
+            }
+            try
+            {
+                MemoryStream ms = new MemoryStream(bytes);
+                Image outputImg = Image.FromStream(ms);
+                return outputImg;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

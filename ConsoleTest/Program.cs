@@ -4,15 +4,33 @@ using System.Data;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Reflection;
+using System.Threading.Tasks;
 using DeanZhou.Framework;
 
 namespace ConsoleTest
 {
     class Program
     {
+        public static void ExecCrawler(int p, int t)
+        {
+            CaoQunCrawlerCore cc = new CaoQunCrawlerCore(p, t);
+            cc.ExecCrawler();
+        }
         static void Main(string[] args)
         {
 
+            Parallel.Invoke(
+                () => ExecCrawler(30, 16),
+                () => ExecCrawler(31, 16),
+                () => ExecCrawler(32, 16),
+                   () => ExecCrawler(33, 16),
+                () => ExecCrawler(30, 4),
+                () => ExecCrawler(31, 4),
+
+                () => ExecCrawler(32, 4),
+                () => ExecCrawler(33, 4)
+                );
+            Console.WriteLine("done");
             //DataBufferPool<int> dp = new DataBufferPool<int>(Console.WriteLine);
             //int iu = 0;
             //while (iu < 20)

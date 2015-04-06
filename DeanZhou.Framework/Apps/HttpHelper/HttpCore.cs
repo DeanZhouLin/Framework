@@ -25,7 +25,7 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 访问执行
         /// </summary>
-        protected HttpHelper CurrentHttpHelper { get; set; }
+        public HttpHelper CurrentHttpHelper { get; set; }
 
         public HttpCore()
         {
@@ -50,6 +50,12 @@ namespace DeanZhou.Framework
         public virtual string GetHtml()
         {
             var res = CurrentHttpHelper.GetHtml(CurrentHttpItem).Html;
+            return res;
+        }
+
+        public virtual HttpResult GetHttpResult()
+        {
+            var res = CurrentHttpHelper.GetHtml(CurrentHttpItem);
             return res;
         }
 
