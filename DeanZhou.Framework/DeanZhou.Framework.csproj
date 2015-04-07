@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Apps\DataBufferPool\DataBufferPool.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\Common.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\ComplexFilterCore.cs" />
     <Compile Include="Apps\FilterFramework_V3.0\IFilter.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Apps\HttpHelper\FrameWork\HttpResult.cs" />
     <Compile Include="Apps\HttpHelper\FrameWork\PostDataType.cs" />
     <Compile Include="Apps\HttpHelper\FrameWork\ResultType.cs" />
+    <Compile Include="CommonExtension\HtmlExtension.cs" />
     <Compile Include="Demos\FrameworkImpDemo\EnumTypeIdentifiers\IdentifyDemoString.cs" />
     <Compile Include="Demos\FrameworkImpDemo\EnumTypeIdentifiers\IdentifyString.cs" />
     <Compile Include="Demos\FrameworkImpDemo\EnumTypes\StringEnumType.cs" />
@@ -136,9 +138,7 @@
     <Content Include="RefrenceDll\ICSharpCode.SharpZipLib.dll" />
     <Content Include="RefrenceDll\Newtonsoft.Json.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Apps\DataBufferPool\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>

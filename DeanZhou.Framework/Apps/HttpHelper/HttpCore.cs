@@ -49,94 +49,19 @@ namespace DeanZhou.Framework
         /// <returns></returns>
         public virtual string GetHtml()
         {
-            var res = CurrentHttpHelper.GetHtml(CurrentHttpItem).Html;
+            var res = GetHttpResult().Html;
             return res;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public virtual HttpResult GetHttpResult()
         {
             var res = CurrentHttpHelper.GetHtml(CurrentHttpItem);
             return res;
         }
 
-        public virtual HtmlNodeCollection SelectNodes(string html, string xpath)
-        {
-            HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(html);
-            return doc.DocumentNode.SelectNodes(xpath);
-        }
-
-        public virtual string SelectNodesHtml(string html, string xpath)
-        {
-            HtmlNodeCollection res = SelectNodes(html, xpath);
-            if (res == null)
-            {
-                return "null";
-            }
-            return string.Join("\r\n", res.Nodes().Select(c => c.InnerHtml));
-        }
-
-        public virtual HtmlNode SelectSingleNode(HtmlNode node, string xpath)
-        {
-            if (node == null)
-            {
-                return null;
-            }
-            xpath = node.XPath + xpath;
-            return node.SelectSingleNode(xpath);
-        }
-
-        /// <summary>
-        /// 匹配单个正则
-        /// </summary>
-        /// <param name="html">待匹配html</param>
-        /// <param name="reg">正则</param>
-        /// <returns>匹配结果</returns>
-        protected virtual MatchCollection Match(string html, string reg)
-        {
-            var regex = new Regex(reg, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant);
-            //异步的正则匹配（2000是超时时间）
-            return new AsynchronousRegex(2000).Matchs(regex, html);
-        }
-
-        /// <summary>
-        /// 匹配返回实体（json-> entity）
-        /// </summary>
-        /// <typeparam name="T">待返回实体</typeparam>
-        /// <param name="jsonResult"></param>
-        /// <param name="hasError"></param>
-        /// <returns>T</returns>
-        protected virtual T Match<T>(string jsonResult, out bool hasError)
-        {
-            try
-            {
-                hasError = false;
-                jsonResult = jsonResult.Trim('[').Trim("]\n".ToArray());
-                return jsonResult.ConvertToObject<T>();
-            }
-            catch (Exception)
-            {
-                hasError = true;
-                return default(T);
-            }
-        }
-
-        /// <summary>
-        /// 匹配返回实体列表（json-> entity list）
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="jsonResult"></param>
-        /// <returns></returns>
-        protected virtual List<T> Match<T>(string jsonResult)
-        {
-            try
-            {
-                return jsonResult.ConvertToObject<List<T>>();
-            }
-            catch (Exception)
-            {
-                return new List<T>();
-            }
-        }
     }
 }

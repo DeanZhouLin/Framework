@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using DeanZhou.Framework;
 
@@ -18,7 +19,19 @@ namespace ConsoleTest
         }
         static void Main(string[] args)
         {
+            DataBufferPool<int> dp = new DataBufferPool<int>(tls =>
+            {
+                Console.WriteLine(tls.Count + "|" + string.Join(",", tls));
+            }, 2000);
 
+            Random r = new Random();
+            for (int i = 0; i < 10000000; i++)
+            {
+                dp.PushItem(i % 10);
+                Thread.Sleep(r.Next(10, 300));
+            }
+
+            Console.ReadLine();
             Parallel.Invoke(
                 () => ExecCrawler(30, 16),
                 () => ExecCrawler(31, 16),

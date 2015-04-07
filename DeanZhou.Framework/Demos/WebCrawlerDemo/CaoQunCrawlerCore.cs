@@ -30,14 +30,14 @@ namespace DeanZhou.Framework
             HttpCore hc = new HttpCore();
             hc.SetUrl(CaoQunUrl);
             string mainHtml = hc.GetHtml();
-            HtmlNodeCollection mainItems = hc.SelectNodes(mainHtml, "//*[@id='ajaxtable']/tbody[1]/tr[@class='tr3 t_one']");
+            HtmlNodeCollection mainItems = mainHtml.SelectNodes("//*[@id='ajaxtable']/tbody[1]/tr[@class='tr3 t_one']");
             if (mainItems == null)
             {
                 return new List<CaoQunMainItem>();
             }
             foreach (HtmlNode mainItem in mainItems)
             {
-                var an = hc.SelectSingleNode(mainItem, "/td[2]/h3/a");
+                var an = mainItem.SelectSingleNode("/td[2]/h3/a");
 
                 string infoUrl = "http://ac168.info/bt/" + an.Attributes["href"].Value;
                 string title = an.InnerText;
@@ -63,13 +63,13 @@ namespace DeanZhou.Framework
                 HttpCore hc1 = new HttpCore();
                 hc1.SetUrl(caoQunMainItem.InfoUrl);
                 string infoHtml = hc1.GetHtml();
-                HtmlNodeCollection imgNodes = hc1.SelectNodes(infoHtml, "//*[@id='read_tpc']/img");
+                HtmlNodeCollection imgNodes = infoHtml.SelectNodes("//*[@id='read_tpc']/img");
                 if (imgNodes == null)
                 {
                     return;
                 }
 
-                string remark = hc1.SelectNodes(infoHtml, "//*[@id='read_tpc']")[0].InnerText;
+                string remark = infoHtml.SelectNodes("//*[@id='read_tpc']")[0].InnerText;
                 caoQunMainItem.Remark = remark;
                 Parallel.ForEach(imgNodes, htmlNode =>
                 {
@@ -83,29 +83,41 @@ namespace DeanZhou.Framework
                     {
                         return;
                     }
-                    caoQunMainItem.CaoQunDetailItem.PicUrl = imgUrl;
-                    try
-                    {
-                        if (!Directory.Exists("F://imgs2/" + caoQunMainItem.Title + "/"))
-                        {
-                            Directory.CreateDirectory("F://imgs2/" + caoQunMainItem.Title + "/");
-                        }
-                        string pic = caoQunMainItem.CaoQunDetailItem.PicDic = "F://imgs2/" + caoQunMainItem.Title + "/" + imgUrl.Split('/').Last();
-
-                        Console.WriteLine(imgUrl);
-                        img.Save(pic.Trim('?'));
-                        img.Dispose();
-                    }
-                    catch (Exception)
-                    {
-
-                    }
+                    SaveImg("img2", caoQunMainItem, img, imgUrl);
                 });
 
-
                 //数据入库
-                DapperHelper dh = DapperHelper.GetInstance("Data Source=.;Initial Catalog=DeanDB;Integrated Security=True");
-                const string sqlFormat =
+                StoreDB(caoQunMainItem);
+            });
+
+        }
+
+        private static void SaveImg(string imgFileName, CaoQunMainItem caoQunMainItem, Image img, string imgUrl)
+        {
+            try
+            {
+                caoQunMainItem.CaoQunDetailItem.PicUrl = imgUrl;
+                Console.WriteLine(imgUrl);
+
+                if (!Directory.Exists("F://" + imgFileName + "/" + caoQunMainItem.Title + "/"))
+                {
+                    Directory.CreateDirectory("F://" + imgFileName + "/" + caoQunMainItem.Title + "/");
+                }
+                string pic = caoQunMainItem.CaoQunDetailItem.PicDic = "F://" + imgFileName + "/" + caoQunMainItem.Title + "/" + imgUrl.Split('/').Last();
+
+                img.Save(pic.Trim('?'));
+                img.Dispose();
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private static void StoreDB(CaoQunMainItem caoQunMainItem)
+        {
+            DapperHelper dh = DapperHelper.GetInstance("Data Source=.;Initial Catalog=DeanDB;Integrated Security=True");
+            const string sqlFormat =
 @"INSERT INTO [dbo].[WebCrawlerResult]
            ([Title]
            ,[PicDic]
@@ -116,14 +128,9 @@ namespace DeanZhou.Framework
            ,'{1}'
            ,'{2}'
            ,'{3}')";
-                string sql = string.Format(sqlFormat, caoQunMainItem.Title, caoQunMainItem.CaoQunDetailItem.PicDic,
-                    caoQunMainItem.InfoUrl, caoQunMainItem.Remark);
-                dh.Execute(sql);
-            });
-            foreach (CaoQunMainItem caoQunMainItem in mainItems)
-            {
-                
-            }
+            string sql = string.Format(sqlFormat, caoQunMainItem.Title, caoQunMainItem.CaoQunDetailItem.PicDic,
+                caoQunMainItem.InfoUrl, caoQunMainItem.Remark);
+            dh.Execute(sql);
         }
 
     }

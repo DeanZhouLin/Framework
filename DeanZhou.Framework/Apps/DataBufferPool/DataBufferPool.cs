@@ -4,53 +4,63 @@ using System.Timers;
 
 namespace DeanZhou.Framework
 {
+    /// <summary>
+    /// 数据池
+    /// </summary>
+    /// <typeparam name="TItem"></typeparam>
     public class DataBufferPool<TItem>
     {
-        private readonly Queue<TItem> ItemsQueue;
-
-        private readonly Action<List<T>> ExecAction;
-
+        /// <summary>
+        /// 锁
+        /// </summary>
         private static readonly object _lockObj = new object();
 
-        private static readonly object _lockExecObj = new object();
-         
+        /// <summary>
+        /// 数据暂存队列
+        /// </summary>
+        private readonly Queue<TItem> ItemsQueue;
 
-        public DataBufferPool(Action<TItem> execAction)
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="execAction">处理批量数据</param>
+        /// <param name="interval">暂存时间 毫秒</param>
+        public DataBufferPool(Action<List<TItem>> execAction, double interval = 5000)
         {
+            //初始化队列
             ItemsQueue = new Queue<TItem>();
 
+            //定时器 定时处理缓存的数据
             Timer autoTimer = new Timer
             {
                 AutoReset = true,
                 Enabled = true,
-                Interval = 5000
+                Interval = interval
             };
-            autoTimer.Elapsed += autoTimer_Elapsed;
-            ExecAction = execAction;
+            autoTimer.Elapsed += (sender, e) =>
+            {
+                List<TItem> ls = new List<TItem>();
+                lock (_lockObj)
+                {
+                    while (ItemsQueue.Count > 0)
+                    {
+                        ls.Add(ItemsQueue.Dequeue());
+                    }
+                }
+                if (ls.Count > 0 && execAction != null)
+                {
+                    execAction(ls);
+                }
+                ls.Clear();
+            };
+            autoTimer.Start();
         }
 
-        void autoTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            List<TItem> ls = new List<TItem>();
-            lock (_lockObj)
-            {
-                while (ItemsQueue.Count > 0)
-                {
-                    ls.Add(ItemsQueue.Dequeue());
-                }
-            }
-
-            lock (_lockExecObj)
-            {
-                foreach (TItem item in ls)
-                {
-                    ExecAction(item);
-                }
-            }
-            ls.Clear();
-        }
-
-        public void AddItem(TItem item)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        public void PushItem(TItem item)
         {
             lock (_lockObj)
             {

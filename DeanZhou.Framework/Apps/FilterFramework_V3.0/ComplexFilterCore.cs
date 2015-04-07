@@ -7,11 +7,11 @@ namespace DeanZhou.Framework
     /// <summary>
     /// 复杂过滤器
     /// </summary>
+    /// <typeparam name="TItem"></typeparam>
     /// <typeparam name="TItemType"></typeparam>
-    /// <typeparam name="TEnumType"></typeparam>
-    public class ComplexFilterCore<TItemType, TEnumType>
-        where TItemType : class
-        where TEnumType : struct
+    public class ComplexFilterCore<TItem, TItemType>
+        where TItem : class
+        where TItemType : struct
     {
 
         #region 构造函数
@@ -19,14 +19,14 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 枚举
         /// </summary>
-        public static readonly IEnumerable<TEnumType> EnumTypes;
+        public static readonly IEnumerable<TItemType> EnumTypes;
 
         /// <summary>
         /// 构造函数
         /// </summary>
         static ComplexFilterCore()
         {
-            EnumTypes = Enum.GetValues(typeof(TEnumType)).Cast<TEnumType>();
+            EnumTypes = Enum.GetValues(typeof(TItemType)).Cast<TItemType>();
         }
 
         /// <summary>
@@ -35,10 +35,10 @@ namespace DeanZhou.Framework
         public ComplexFilterCore()
         {
             //简单过滤器实例 过滤单条数据
-            SimpleFilterCore = new SimpleFilterCore<TItemType>();
+            SimpleFilterCore = new SimpleFilterCore<TItem>();
 
             //每种类型需要提取的最小条数
-            EachTypeMinGetCount = new Dictionary<TEnumType, int>();
+            EachTypeMinGetCount = new Dictionary<TItemType, int>();
         }
 
         #endregion
@@ -58,24 +58,24 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 每种类型需要提取的最小条数 *
         /// </summary>
-        protected readonly Dictionary<TEnumType, int> EachTypeMinGetCount;
+        protected readonly Dictionary<TItemType, int> EachTypeMinGetCount;
 
         /// <summary>
         /// 设置对应类型需要获取的最大条数
         /// </summary>
-        public ComplexFilterCore<TItemType, TEnumType> SetMinGetCount(TEnumType needEnumType, int needGetCount)
+        public ComplexFilterCore<TItem, TItemType> SetMinGetCount(TItemType needEnumType, int needGetCount)
         {
             if (EachTypeMinGetCount.Count == 0)
             {
-                foreach (TEnumType item in EnumTypes)
+                foreach (TItemType item in EnumTypes)
                 {
                     EachTypeMinGetCount.Add(item, 0);
                 }
             }
 
-            IEnumerable<TEnumType> validEnums = EnumTypes.Where(tt => (needEnumType.ChangeType<int>() & tt.ChangeType<int>()) == tt.ChangeType<int>()).ToList();
+            IEnumerable<TItemType> validEnums = EnumTypes.Where(tt => (needEnumType.ChangeType<int>() & tt.ChangeType<int>()) == tt.ChangeType<int>()).ToList();
 
-            foreach (TEnumType validEnumType in validEnums)
+            foreach (TItemType validEnumType in validEnums)
             {
                 EachTypeMinGetCount[validEnumType] = needGetCount;
             }
@@ -83,7 +83,7 @@ namespace DeanZhou.Framework
             CurrNeedType = EachTypeMinGetCount.First(c => c.Value > 0).Key.ChangeType<int>();
 
             bool isFirst = true;
-            foreach (KeyValuePair<TEnumType, int> kv in EachTypeMinGetCount)
+            foreach (KeyValuePair<TItemType, int> kv in EachTypeMinGetCount)
             {
                 if (isFirst)
                 {
@@ -112,13 +112,13 @@ namespace DeanZhou.Framework
         /// <param name="needEnumTypeName"></param>
         /// <param name="needGetCount"></param>
         /// <returns></returns>
-        public ComplexFilterCore<TItemType, TEnumType> SetMinGetCount(string needEnumTypeName, int needGetCount)
+        public ComplexFilterCore<TItem, TItemType> SetMinGetCount(string needEnumTypeName, int needGetCount)
         {
             if (!string.IsNullOrEmpty(needEnumTypeName))
             {
                 foreach (string str in needEnumTypeName.Split('|').Where(c => !string.IsNullOrEmpty(c)))
                 {
-                    SetMinGetCount(Common.CreateEnum<TEnumType>(str), needGetCount);
+                    SetMinGetCount(Common.CreateEnum<TItemType>(str), needGetCount);
                 }
 
             }
@@ -132,13 +132,13 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 类型转换器 *
         /// </summary>
-        protected Func<TItemType, TEnumType> EnumTypeIdentifier;
+        protected Func<TItem, TItemType> EnumTypeIdentifier;
 
         /// <summary>
         /// 注册类型识别器
         /// </summary>
         /// <param name="enumTypeIdentifier">类型识别器</param>
-        public ComplexFilterCore<TItemType, TEnumType> RegistEnumTypeIdentifier(Func<TItemType, TEnumType> enumTypeIdentifier)
+        public ComplexFilterCore<TItem, TItemType> RegistEnumTypeIdentifier(Func<TItem, TItemType> enumTypeIdentifier)
         {
             //初始化对象类型识别器
             EnumTypeIdentifier = enumTypeIdentifier;
@@ -150,7 +150,7 @@ namespace DeanZhou.Framework
         /// </summary>
         /// <param name="enumTypeIdentifier"></param>
         /// <returns></returns>
-        public ComplexFilterCore<TItemType, TEnumType> RegistEnumTypeIdentifier(IEnumTypeIdentifier<TItemType, TEnumType> enumTypeIdentifier)
+        public ComplexFilterCore<TItem, TItemType> RegistEnumTypeIdentifier(IEnumTypeIdentifier<TItem, TItemType> enumTypeIdentifier)
         {
             if (enumTypeIdentifier == null)
             {
@@ -167,10 +167,10 @@ namespace DeanZhou.Framework
         /// <param name="assemblyName"></param>
         /// <param name="identifierFullClassName"></param>
         /// <returns></returns>
-        public ComplexFilterCore<TItemType, TEnumType> RegistEnumTypeIdentifier(string assemblyName,
+        public ComplexFilterCore<TItem, TItemType> RegistEnumTypeIdentifier(string assemblyName,
             string identifierFullClassName)
         {
-            var instance = Common.CreateIdentifier<TItemType, TEnumType>(assemblyName, identifierFullClassName);
+            var instance = Common.CreateIdentifier<TItem, TItemType>(assemblyName, identifierFullClassName);
             return RegistEnumTypeIdentifier(instance);
         }
 
@@ -181,12 +181,12 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 简单过滤器实例 *
         /// </summary>
-        protected readonly SimpleFilterCore<TItemType> SimpleFilterCore;
+        protected readonly SimpleFilterCore<TItem> SimpleFilterCore;
 
         /// <summary>
         /// 添加自定义过滤器
         /// </summary>
-        public ComplexFilterCore<TItemType, TEnumType> AddFilter(params IFilter<TItemType>[] filters)
+        public ComplexFilterCore<TItem, TItemType> AddFilter(params IFilter<TItem>[] filters)
         {
             SimpleFilterCore.AddFilter(filters);
             return this;
@@ -197,7 +197,7 @@ namespace DeanZhou.Framework
         /// </summary>
         /// <param name="filters"></param>
         /// <returns></returns>
-        public ComplexFilterCore<TItemType, TEnumType> AddFilter(params Func<TItemType, bool>[] filters)
+        public ComplexFilterCore<TItem, TItemType> AddFilter(params Func<TItem, bool>[] filters)
         {
             SimpleFilterCore.AddFilter(filters);
             return this;
@@ -209,7 +209,7 @@ namespace DeanZhou.Framework
         /// <param name="assemblyName"></param>
         /// <param name="filterFullClassNames"></param>
         /// <returns></returns>
-        public ComplexFilterCore<TItemType, TEnumType> AddFilter(string assemblyName, params string[] filterFullClassNames)
+        public ComplexFilterCore<TItem, TItemType> AddFilter(string assemblyName, params string[] filterFullClassNames)
         {
             SimpleFilterCore.AddFilter(assemblyName, filterFullClassNames);
             return this;
@@ -224,20 +224,20 @@ namespace DeanZhou.Framework
         /// </summary>
         /// <param name="waitProcessDataList"></param>
         /// <returns></returns>
-        public virtual Dictionary<TItemType, TEnumType> GetFilteredResult(IEnumerable<TItemType> waitProcessDataList)
+        public virtual Dictionary<TItem, TItemType> GetFilteredResult(IEnumerable<TItem> waitProcessDataList)
         {
-            Dictionary<TItemType, TEnumType> res = new Dictionary<TItemType, TEnumType>();
+            Dictionary<TItem, TItemType> res = new Dictionary<TItem, TItemType>();
 
             //当前各个类型上已获取的个数
-            Dictionary<TEnumType, int> currEachTypeGetedCount = new Dictionary<TEnumType, int>();
-            foreach (TEnumType item in EnumTypes)
+            Dictionary<TItemType, int> currEachTypeGetedCount = new Dictionary<TItemType, int>();
+            foreach (TItemType item in EnumTypes)
             {
                 currEachTypeGetedCount[item] = 0;
             }
 
             int currCheckedCount = 0;
 
-            foreach (TItemType itemType in waitProcessDataList)
+            foreach (TItem itemType in waitProcessDataList)
             {
                 //1 使用简单过滤器删选
                 if (!SimpleFilterCore.DoFilter(itemType))
@@ -250,8 +250,8 @@ namespace DeanZhou.Framework
                 {
                     throw new Exception("未注册类型识别器");
                 }
-                TEnumType et = EnumTypeIdentifier(itemType);
-                IEnumerable<TEnumType> validEnums = EnumTypes.Where(targetType => (et.ChangeType<int>() & targetType.ChangeType<int>()) == targetType.ChangeType<int>()).ToList();
+                TItemType et = EnumTypeIdentifier(itemType);
+                IEnumerable<TItemType> validEnums = EnumTypes.Where(targetType => (et.ChangeType<int>() & targetType.ChangeType<int>()) == targetType.ChangeType<int>()).ToList();
 
                 //3 设置当前检测条数
                 currCheckedCount++;
@@ -260,7 +260,7 @@ namespace DeanZhou.Framework
                 if (EachTypeMinGetCount.All(c => c.Value == 0) || validEnums.Any(enumType => currEachTypeGetedCount[enumType] < EachTypeMinGetCount[enumType]))
                 {
                     //5 更新当前分类的获取数目
-                    foreach (TEnumType targetType in validEnums)
+                    foreach (TItemType targetType in validEnums)
                     {
                         currEachTypeGetedCount[targetType]++;
                     }
@@ -282,7 +282,7 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 判断本次过滤是否完成
         /// </summary>
-        protected virtual bool IsFinished(int currCheckedCount, Dictionary<TEnumType, int> currEachTypeGetedCount)
+        protected virtual bool IsFinished(int currCheckedCount, Dictionary<TItemType, int> currEachTypeGetedCount)
         {
             //检测条数退出条件
             bool isNeedCountFinished = QuitValue > 0 && currCheckedCount >= QuitValue;
@@ -310,13 +310,13 @@ namespace DeanZhou.Framework
     /// <summary>
     /// 复杂过滤器
     /// </summary>
+    /// <typeparam name="TItem"></typeparam>
+    /// <typeparam name="TParam"></typeparam>
     /// <typeparam name="TItemType"></typeparam>
-    /// <typeparam name="TParamType"></typeparam>
-    /// <typeparam name="TEnumType"></typeparam>
-    public class ComplexFilterCore<TItemType, TParamType, TEnumType>
-        where TItemType : class
-        where TParamType : class
-        where TEnumType : struct
+    public class ComplexFilterCore<TItem, TParam, TItemType>
+        where TItem : class
+        where TParam : class
+        where TItemType : struct
     {
 
         #region 构造函数
@@ -324,14 +324,14 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 枚举
         /// </summary>
-        public static readonly IEnumerable<TEnumType> EnumTypes;
+        public static readonly IEnumerable<TItemType> EnumTypes;
 
         /// <summary>
         /// 构造函数
         /// </summary>
         static ComplexFilterCore()
         {
-            EnumTypes = Enum.GetValues(typeof(TEnumType)).Cast<TEnumType>();
+            EnumTypes = Enum.GetValues(typeof(TItemType)).Cast<TItemType>();
         }
 
         /// <summary>
@@ -340,10 +340,10 @@ namespace DeanZhou.Framework
         public ComplexFilterCore()
         {
             //简单过滤器实例 过滤单条数据
-            SimpleFilterCore = new SimpleFilterCore<TItemType, TParamType>();
+            SimpleFilterCore = new SimpleFilterCore<TItem, TParam>();
 
             //每种类型需要提取的最小条数
-            EachTypeMinGetCount = new Dictionary<TEnumType, int>();
+            EachTypeMinGetCount = new Dictionary<TItemType, int>();
         }
 
         #endregion
@@ -363,24 +363,24 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 每种类型需要提取的最小条数 *
         /// </summary>
-        protected readonly Dictionary<TEnumType, int> EachTypeMinGetCount;
+        protected readonly Dictionary<TItemType, int> EachTypeMinGetCount;
 
         /// <summary>
         /// 设置对应类型需要获取的最大条数
         /// </summary>
-        public ComplexFilterCore<TItemType, TParamType, TEnumType> SetMinGetCount(TEnumType needEnumType, int needGetCount)
+        public ComplexFilterCore<TItem, TParam, TItemType> SetMinGetCount(TItemType needEnumType, int needGetCount)
         {
             if (EachTypeMinGetCount.Count == 0)
             {
-                foreach (TEnumType item in EnumTypes)
+                foreach (TItemType item in EnumTypes)
                 {
                     EachTypeMinGetCount.Add(item, 0);
                 }
             }
 
-            IEnumerable<TEnumType> validEnums = EnumTypes.Where(tt => needEnumType.HasItem(tt)).ToList();
+            IEnumerable<TItemType> validEnums = EnumTypes.Where(tt => needEnumType.HasItem(tt)).ToList();
 
-            foreach (TEnumType validEnumType in validEnums)
+            foreach (TItemType validEnumType in validEnums)
             {
                 EachTypeMinGetCount[validEnumType] = needGetCount;
             }
@@ -388,7 +388,7 @@ namespace DeanZhou.Framework
             CurrNeedType = EachTypeMinGetCount.First(c => c.Value > 0).Key.ChangeType<int>();
 
             bool isFirst = true;
-            foreach (KeyValuePair<TEnumType, int> kv in EachTypeMinGetCount)
+            foreach (KeyValuePair<TItemType, int> kv in EachTypeMinGetCount)
             {
                 if (isFirst)
                 {
@@ -417,14 +417,14 @@ namespace DeanZhou.Framework
         /// <param name="needEnumTypeName"></param>
         /// <param name="needGetCount"></param>
         /// <returns></returns>
-        public ComplexFilterCore<TItemType, TParamType, TEnumType> SetMinGetCount(string needEnumTypeName,
+        public ComplexFilterCore<TItem, TParam, TItemType> SetMinGetCount(string needEnumTypeName,
             int needGetCount)
         {
             if (!string.IsNullOrEmpty(needEnumTypeName))
             {
                 foreach (string str in needEnumTypeName.Split('|').Where(c => !string.IsNullOrEmpty(c)))
                 {
-                    SetMinGetCount(Common.CreateEnum<TEnumType>(str), needGetCount);
+                    SetMinGetCount(Common.CreateEnum<TItemType>(str), needGetCount);
                 }
             }
             return this;
@@ -437,13 +437,13 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 类型转换器 *
         /// </summary>
-        protected Func<TItemType, TParamType, TEnumType> EnumTypeIdentifier;
+        protected Func<TItem, TParam, TItemType> EnumTypeIdentifier;
 
         /// <summary>
         /// 注册类型识别器
         /// </summary>
         /// <param name="enumTypeIdentifier">类型识别器</param>
-        public ComplexFilterCore<TItemType, TParamType, TEnumType> RegistEnumTypeIdentifier(Func<TItemType, TParamType, TEnumType> enumTypeIdentifier)
+        public ComplexFilterCore<TItem, TParam, TItemType> RegistEnumTypeIdentifier(Func<TItem, TParam, TItemType> enumTypeIdentifier)
         {
             //初始化对象类型识别器
             EnumTypeIdentifier = enumTypeIdentifier;
@@ -455,7 +455,7 @@ namespace DeanZhou.Framework
         /// </summary>
         /// <param name="enumTypeIdentifier"></param>
         /// <returns></returns>
-        public ComplexFilterCore<TItemType, TParamType, TEnumType> RegistEnumTypeIdentifier(IEnumTypeIdentifier<TItemType, TParamType, TEnumType> enumTypeIdentifier)
+        public ComplexFilterCore<TItem, TParam, TItemType> RegistEnumTypeIdentifier(IEnumTypeIdentifier<TItem, TParam, TItemType> enumTypeIdentifier)
         {
             if (enumTypeIdentifier == null)
             {
@@ -473,12 +473,12 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 简单过滤器实例 *
         /// </summary>
-        protected readonly SimpleFilterCore<TItemType, TParamType> SimpleFilterCore;
+        protected readonly SimpleFilterCore<TItem, TParam> SimpleFilterCore;
 
         /// <summary>
         /// 添加自定义过滤器
         /// </summary>
-        public ComplexFilterCore<TItemType, TParamType, TEnumType> AddFilter(params IFilter<TItemType, TParamType>[] filters)
+        public ComplexFilterCore<TItem, TParam, TItemType> AddFilter(params IFilter<TItem, TParam>[] filters)
         {
             SimpleFilterCore.AddFilter(filters);
             return this;
@@ -489,20 +489,20 @@ namespace DeanZhou.Framework
         /// </summary>
         /// <param name="filters"></param>
         /// <returns></returns>
-        public ComplexFilterCore<TItemType, TParamType, TEnumType> AddFilter(params Func<TItemType, TParamType, bool>[] filters)
+        public ComplexFilterCore<TItem, TParam, TItemType> AddFilter(params Func<TItem, TParam, bool>[] filters)
         {
             SimpleFilterCore.AddFilter(filters);
             return this;
         }
 
-        public ComplexFilterCore<TItemType, TParamType, TEnumType> AddFilter(string assemblyName, params string[] filterFullClassNames)
+        public ComplexFilterCore<TItem, TParam, TItemType> AddFilter(string assemblyName, params string[] filterFullClassNames)
         {
             SimpleFilterCore.AddFilter(assemblyName, filterFullClassNames);
             return this;
         }
         #endregion
 
-        #region GetFilteredResult
+        #region DoFilter
 
         /// <summary>
         /// 获取过滤后的数据
@@ -510,28 +510,28 @@ namespace DeanZhou.Framework
         /// <param name="waitProcessDataList"></param>
         /// <param name="pt"></param>
         /// <returns></returns>
-        public virtual Dictionary<TItemType, TEnumType> DoFilter(IEnumerable<TItemType> waitProcessDataList, TParamType pt)
+        public virtual Dictionary<TItem, TItemType> DoFilter(IEnumerable<TItem> waitProcessDataList, TParam pt)
         {
             if (EnumTypeIdentifier == null)
             {
                 throw new Exception("未注册类型识别器");
             }
 
-            Dictionary<TItemType, TEnumType> res = new Dictionary<TItemType, TEnumType>();
+            Dictionary<TItem, TItemType> res = new Dictionary<TItem, TItemType>();
 
             //当前各个类型上已获取的个数
-            Dictionary<TEnumType, int> currEachTypeGetedCount = new Dictionary<TEnumType, int>();
-            foreach (TEnumType item in EnumTypes)
+            Dictionary<TItemType, int> currEachTypeGetedCount = new Dictionary<TItemType, int>();
+            foreach (TItemType item in EnumTypes)
             {
                 currEachTypeGetedCount[item] = 0;
             }
 
             int currCheckedCount = 0;
 
-            foreach (TItemType itemType in waitProcessDataList)
+            foreach (TItem itemType in waitProcessDataList)
             {
-                TEnumType et = EnumTypeIdentifier(itemType, pt);
-                IEnumerable<TEnumType> validEnums = EnumTypes.Where(targetType => et.HasItem(targetType)).ToList();
+                TItemType et = EnumTypeIdentifier(itemType, pt);
+                IEnumerable<TItemType> validEnums = EnumTypes.Where(targetType => et.HasItem(targetType)).ToList();
 
                 if (validEnums.All(enumType => currEachTypeGetedCount[enumType] >= EachTypeMinGetCount[enumType]))
                 {
@@ -544,7 +544,7 @@ namespace DeanZhou.Framework
                 }
                 currCheckedCount++;
 
-                foreach (TEnumType targetType in validEnums)
+                foreach (TItemType targetType in validEnums)
                 {
                     currEachTypeGetedCount[targetType]++;
                 }
@@ -561,7 +561,7 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 判断本次过滤是否完成
         /// </summary>
-        protected virtual bool IsFinished(int currCheckedCount, Dictionary<TEnumType, int> currEachTypeGetedCount)
+        protected virtual bool IsFinished(int currCheckedCount, Dictionary<TItemType, int> currEachTypeGetedCount)
         {
             //检测条数退出条件
             bool isNeedCountFinished = QuitValue > 0 && currCheckedCount >= QuitValue;
@@ -583,6 +583,90 @@ namespace DeanZhou.Framework
         }
 
         #endregion
+
+    }
+
+    /// <summary>
+    /// 复杂过滤器
+    /// </summary>
+    /// <typeparam name="TItem">你需要过滤的对象的类型</typeparam>
+    /// <typeparam name="TParam">过滤一个对象需要的辅助参数的类型</typeparam>
+    public class ComplexFilterCore1<TItem, TParam>
+        where TItem : class
+        where TParam : class
+    {
+
+        #region 构造函数
+
+        /// <summary>
+        /// 简单过滤器实例 *
+        /// </summary>
+        protected readonly SimpleFilterCore<TItem, TParam> SimpleFilterCore;
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        public ComplexFilterCore1()
+        {
+            //简单过滤器实例 过滤单条数据
+            SimpleFilterCore = new SimpleFilterCore<TItem, TParam>();
+        }
+
+        #endregion
+
+        #region AddFilter
+
+        /// <summary>
+        /// 添加自定义过滤器
+        /// </summary>
+        public ComplexFilterCore1<TItem, TParam> AddFilter(params IFilter<TItem, TParam>[] filters)
+        {
+            SimpleFilterCore.AddFilter(filters);
+            return this;
+        }
+
+        /// <summary>
+        /// 添加自定义过滤器
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <returns></returns>
+        public ComplexFilterCore1<TItem, TParam> AddFilter(params Func<TItem, TParam, bool>[] filters)
+        {
+            SimpleFilterCore.AddFilter(filters);
+            return this;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 获取过滤后的数据
+        /// </summary>
+        /// <param name="waitProcessItemList"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public virtual List<TItem> DoFilter(IEnumerable<TItem> waitProcessItemList, TParam param)
+        {
+            if (waitProcessItemList == null)
+            {
+                return new List<TItem>();
+            }
+
+            List<TItem> res = new List<TItem>();
+
+            foreach (TItem item in waitProcessItemList)
+            {
+                //使用简单过滤器删选
+                if (!SimpleFilterCore.DoFilter(item, param))
+                {
+                    continue;
+                }
+
+                //添加结果
+                res.Add(item);
+            }
+
+            return res;
+        }
 
     }
 }
