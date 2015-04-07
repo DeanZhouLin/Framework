@@ -13,12 +13,12 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 锁
         /// </summary>
-        private static readonly object _lockObj = new object();
+        private static readonly object LockObj = new object();
 
         /// <summary>
         /// 数据暂存队列
         /// </summary>
-        private readonly Queue<TItem> ItemsQueue;
+        private readonly Queue<TItem> _itemsQueue;
 
         /// <summary>
         /// 构造函数
@@ -28,7 +28,7 @@ namespace DeanZhou.Framework
         public DataBufferPool(Action<List<TItem>> execAction, double interval = 5000)
         {
             //初始化队列
-            ItemsQueue = new Queue<TItem>();
+            _itemsQueue = new Queue<TItem>();
 
             //定时器 定时处理缓存的数据
             Timer autoTimer = new Timer
@@ -40,11 +40,11 @@ namespace DeanZhou.Framework
             autoTimer.Elapsed += (sender, e) =>
             {
                 List<TItem> ls = new List<TItem>();
-                lock (_lockObj)
+                lock (LockObj)
                 {
-                    while (ItemsQueue.Count > 0)
+                    while (_itemsQueue.Count > 0)
                     {
-                        ls.Add(ItemsQueue.Dequeue());
+                        ls.Add(_itemsQueue.Dequeue());
                     }
                 }
                 if (ls.Count > 0 && execAction != null)
@@ -62,9 +62,9 @@ namespace DeanZhou.Framework
         /// <param name="item"></param>
         public void PushItem(TItem item)
         {
-            lock (_lockObj)
+            lock (LockObj)
             {
-                ItemsQueue.Enqueue(item);
+                _itemsQueue.Enqueue(item);
             }
         }
     }

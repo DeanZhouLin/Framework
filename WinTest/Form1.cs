@@ -30,7 +30,7 @@ namespace WinTest
 
         private void btnSelectNodes_Click(object sender, EventArgs e)
         {
-            rTxtRes.Text = hc.SelectNodesHtml(html, txtNodesXPath.Text);
+            rTxtRes.Text = html.SelectNodesHtml(txtNodesXPath.Text);
         }
 
         private void btnSelectNode_Click(object sender, EventArgs e)
@@ -38,7 +38,7 @@ namespace WinTest
             try
             {
 
-                var nodes = hc.SelectNodes(html, txtNodesXPath.Text);
+                var nodes = html.SelectNodes(txtNodesXPath.Text);
                 int index = int.Parse(txtNodeIndex.Text.Trim());
 
                 var res = nodes[index].SelectSingleNode(nodes[index].XPath + txtSingleNodeXpath.Text).InnerHtml;
