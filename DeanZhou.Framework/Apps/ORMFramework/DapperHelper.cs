@@ -3,7 +3,7 @@ using System.Data;
 using System.Data.SqlClient;
 using Dapper;
 
-namespace DeanZhou.Framework.Apps.ORMFramework
+namespace DeanZhou.Framework
 {
     public sealed class DapperHelper
     {
@@ -57,6 +57,14 @@ namespace DeanZhou.Framework.Apps.ORMFramework
             using (IDbConnection con = OpenConnection())
             {
                 return con.Execute(execSql, t);
+            }
+        }
+
+        public object Execute(string execSql)
+        {
+            using (IDbConnection con = OpenConnection())
+            {
+                return con.Execute(execSql);
             }
         }
     }

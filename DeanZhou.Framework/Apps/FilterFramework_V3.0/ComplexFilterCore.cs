@@ -240,7 +240,7 @@ namespace DeanZhou.Framework
             foreach (TItemType itemType in waitProcessDataList)
             {
                 //1 使用简单过滤器删选
-                if (!SimpleFilterCore.CheckCurrData(itemType))
+                if (!SimpleFilterCore.DoFilter(itemType))
                 {
                     continue;
                 }
@@ -378,7 +378,7 @@ namespace DeanZhou.Framework
                 }
             }
 
-            IEnumerable<TEnumType> validEnums = EnumTypes.Where(tt => (needEnumType.ChangeType<int>() & tt.ChangeType<int>()) == tt.ChangeType<int>()).ToList();
+            IEnumerable<TEnumType> validEnums = EnumTypes.Where(tt => needEnumType.HasItem(tt)).ToList();
 
             foreach (TEnumType validEnumType in validEnums)
             {
@@ -510,8 +510,13 @@ namespace DeanZhou.Framework
         /// <param name="waitProcessDataList"></param>
         /// <param name="pt"></param>
         /// <returns></returns>
-        public virtual Dictionary<TItemType, TEnumType> GetFilteredResult(IEnumerable<TItemType> waitProcessDataList, TParamType pt)
+        public virtual Dictionary<TItemType, TEnumType> DoFilter(IEnumerable<TItemType> waitProcessDataList, TParamType pt)
         {
+            if (EnumTypeIdentifier == null)
+            {
+                throw new Exception("未注册类型识别器");
+            }
+
             Dictionary<TItemType, TEnumType> res = new Dictionary<TItemType, TEnumType>();
 
             //当前各个类型上已获取的个数
@@ -525,46 +530,31 @@ namespace DeanZhou.Framework
 
             foreach (TItemType itemType in waitProcessDataList)
             {
-                //1 使用简单过滤器删选
-                if (!SimpleFilterCore.CheckCurrData(itemType, pt))
+                TEnumType et = EnumTypeIdentifier(itemType, pt);
+                IEnumerable<TEnumType> validEnums = EnumTypes.Where(targetType => et.HasItem(targetType)).ToList();
+
+                if (validEnums.All(enumType => currEachTypeGetedCount[enumType] >= EachTypeMinGetCount[enumType]))
                 {
                     continue;
                 }
 
-                //2 通过过滤，识别当前对象的分类类型
-                if (EnumTypeIdentifier == null)
+                if (!SimpleFilterCore.DoFilter(itemType, pt))
                 {
-                    throw new Exception("未注册类型识别器");
+                    continue;
                 }
-                TEnumType et = EnumTypeIdentifier(itemType, pt);
-                IEnumerable<TEnumType> validEnums = EnumTypes.
-                    Where(targetType => (et.ChangeType<int>() & targetType.ChangeType<int>())
-                        == targetType.ChangeType<int>()).ToList();
-
-                //3 设置当前检测条数
                 currCheckedCount++;
 
-                //4 根据分类类型，判断该对象是否应该添加
-                if (EachTypeMinGetCount.All(c => c.Value == 0) ||
-                    validEnums.Any(enumType => currEachTypeGetedCount[enumType] < EachTypeMinGetCount[enumType]))
+                foreach (TEnumType targetType in validEnums)
                 {
-                    //5 更新当前分类的获取数目
-                    foreach (TEnumType targetType in validEnums)
-                    {
-                        currEachTypeGetedCount[targetType]++;
-                    }
-
-                    //6 添加结果
-                    res.Add(itemType, et);
+                    currEachTypeGetedCount[targetType]++;
                 }
 
-                //7 是否已经完成
+                res.Add(itemType, et);
                 if (IsFinished(currCheckedCount, currEachTypeGetedCount))
                 {
                     break;
                 }
             }
-
             return res;
         }
 
