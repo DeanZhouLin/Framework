@@ -8,12 +8,12 @@ namespace DeanZhou.Framework
     {
         private readonly Queue<TItem> ItemsQueue;
 
-        private readonly Action<TItem> ExecAction;
+        private readonly Action<List<T>> ExecAction;
 
         private static readonly object _lockObj = new object();
 
         private static readonly object _lockExecObj = new object();
-
+         
 
         public DataBufferPool(Action<TItem> execAction)
         {
