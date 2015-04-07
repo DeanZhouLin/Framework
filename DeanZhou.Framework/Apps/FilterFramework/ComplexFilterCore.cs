@@ -13,7 +13,6 @@ namespace DeanZhou.Framework
         where TItem : class
         where TItemType : struct
     {
-
         #region 构造函数
 
         /// <summary>
@@ -304,7 +303,6 @@ namespace DeanZhou.Framework
         }
 
         #endregion
-
     }
 
     /// <summary>
@@ -318,7 +316,6 @@ namespace DeanZhou.Framework
         where TParam : class
         where TItemType : struct
     {
-
         #region 构造函数
 
         /// <summary>
@@ -583,7 +580,6 @@ namespace DeanZhou.Framework
         }
 
         #endregion
-
     }
 
     /// <summary>
@@ -595,7 +591,6 @@ namespace DeanZhou.Framework
         where TItem : class
         where TParam : class
     {
-
         #region 构造函数
 
         /// <summary>
@@ -667,6 +662,5 @@ namespace DeanZhou.Framework
 
             return res;
         }
-
     }
 }
