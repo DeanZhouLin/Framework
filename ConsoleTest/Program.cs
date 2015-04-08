@@ -128,7 +128,7 @@ namespace ConsoleTest
             #region 过滤器测试
 
             //初始化过滤器
-            ComplexFilterCore<string, DemoStringEnumType> demoStrFilterCore = new ComplexFilterCore<string, DemoStringEnumType>();
+            ListFilterCore<string, DemoStringEnumType> demoStrFilterCore = new ListFilterCore<string, DemoStringEnumType>();
 
             //初始化 HasOne 2 LongLen 1
             demoStrFilterCore.SetMinGetCount(DemoStringEnumType.LongLen, 1);

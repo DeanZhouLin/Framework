@@ -63,7 +63,12 @@
   <ItemGroup>
     <Compile Include="Apps\DataBufferPool\DataBufferPool.cs" />
     <Compile Include="Apps\FilterFramework\Common.cs" />
-    <Compile Include="Apps\FilterFramework\ComplexFilterCore.cs" />
+    <Compile Include="Apps\FilterFramework\FilterCoreForElement.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Apps\FilterFramework\FilterCoreForList.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Apps\FilterFramework\IFilter.cs" />
     <Compile Include="Apps\FilterFramework\IEnumTypeIdentifier.cs" />
     <Compile Include="Apps\HttpHelper\FrameWork\AsynchronousRegex.cs" />
@@ -74,14 +79,6 @@
     <Compile Include="Apps\HttpHelper\FrameWork\PostDataType.cs" />
     <Compile Include="Apps\HttpHelper\FrameWork\ResultType.cs" />
     <Compile Include="CommonExtension\HtmlExtension.cs" />
-    <Compile Include="Demos\FrameworkImpDemo\EnumTypeIdentifiers\IdentifyDemoString.cs" />
-    <Compile Include="Demos\FrameworkImpDemo\EnumTypeIdentifiers\IdentifyString.cs" />
-    <Compile Include="Demos\FrameworkImpDemo\EnumTypes\StringEnumType.cs" />
-    <Compile Include="Demos\FrameworkImpDemo\FilterImps\DemoStringContentFilter.cs" />
-    <Compile Include="Apps\FilterFramework\SimpleFilterCore.cs" />
-    <Compile Include="Demos\FrameworkImpDemo\FilterImps\StringContentFilter.cs" />
-    <Compile Include="Demos\FrameworkImpDemo\FilterImps\StringLenFilter.cs" />
-    <Compile Include="Demos\FrameworkImpDemo\StringFilterCore.cs" />
     <Compile Include="Apps\LocalCacheImp\RequestBase.cs" />
     <Compile Include="Apps\ORMFramework\DapperHelper.cs" />
     <Compile Include="CommonExtension\Null.cs" />

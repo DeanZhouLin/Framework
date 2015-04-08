@@ -5,20 +5,6 @@ namespace DeanZhou.Framework
 {
     public static class Common
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TItemType"></typeparam>
-        /// <typeparam name="TEnumType"></typeparam>
-        /// <param name="assemblyName"></param>
-        /// <param name="fullClassName"></param>
-        /// <returns></returns>
-        public static IEnumTypeIdentifier<TItemType, TEnumType> CreateIdentifier<TItemType, TEnumType>(string assemblyName, string fullClassName)
-            where TItemType : class
-        {
-            var ect = CreateInstance(assemblyName, fullClassName) as IEnumTypeIdentifier<TItemType, TEnumType>;
-            return ect;
-        }
 
         /// <summary>
         /// 
@@ -29,27 +15,14 @@ namespace DeanZhou.Framework
         /// <param name="assemblyName"></param>
         /// <param name="fullClassName"></param>
         /// <returns></returns>
-        public static IEnumTypeIdentifier<TItemType, TParamType, TEnumType> CreateIdentifier<TItemType, TParamType, TEnumType>(string assemblyName, string fullClassName)
+        public static IItemTypeIdentifier<TItemType, TParamType, TEnumType> CreateIdentifier<TItemType, TParamType, TEnumType>(string assemblyName, string fullClassName)
             where TItemType : class
             where TParamType : class
         {
-            var ect = CreateInstance(assemblyName, fullClassName) as IEnumTypeIdentifier<TItemType, TParamType, TEnumType>;
+            var ect = CreateInstance(assemblyName, fullClassName) as IItemTypeIdentifier<TItemType, TParamType, TEnumType>;
             return ect;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TItemType"></typeparam>
-        /// <param name="assemblyName"></param>
-        /// <param name="fullClassName"></param>
-        /// <returns></returns>
-        public static IFilter<TItemType> CreateIFilter<TItemType>(string assemblyName, string fullClassName)
-            where TItemType : class
-        {
-            var ect = CreateInstance(assemblyName, fullClassName) as IFilter<TItemType>;
-            return ect;
-        }
 
         /// <summary>
         /// 
