@@ -28,16 +28,16 @@ namespace DeanZhou.Framework
         /// <summary>
         /// 根据相传入的数据，得到相应页面数据
         /// </summary>
-        /// <param name="objhttpitem">参数类对象</param>
+        /// <param name="objHttpItem">参数类对象</param>
         /// <returns>返回HttpResult类型</returns>
-        public HttpResult GetHtml(HttpItem objhttpitem)
+        public HttpResult GetHtml(HttpItem objHttpItem)
         {
             //返回参数
             var result = new HttpResult();
             try
             {
                 //准备参数
-                SetRequest(objhttpitem);
+                SetRequest(objHttpItem);
             }
             catch (Exception ex)
             {
@@ -69,7 +69,7 @@ namespace DeanZhou.Framework
                     byte[] rawResponse = stream.ToArray();
                     stream.Close();
                     //是否返回Byte类型数据
-                    if (objhttpitem.ResultType == ResultType.Byte) result.ResultByte = rawResponse;
+                    if (objHttpItem.ResultType == ResultType.Byte) result.ResultByte = rawResponse;
                     //从这里开始我们要无视编码了
                     if (_encoding == null)
                     {
@@ -102,7 +102,7 @@ namespace DeanZhou.Framework
             {
                 result.Html = ex.Message;
             }
-            if (objhttpitem.IsToLower) result.Html = result.Html.ToLower();
+            if (objHttpItem.IsToLower) result.Html = result.Html.ToLower();
             return result;
         }
 

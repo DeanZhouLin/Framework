@@ -155,7 +155,7 @@ namespace DeanZhou.Framework
         /// </summary>
         /// <param name="message">message</param>
         /// <param name="type"></param>
-        public static void LogLocal(this object message, string type = "CustomInfo")
+        public static void CustomInfo(object message, string type = "CustomInfo")
         {
             if (CustomInfoEnabled)
             {

@@ -79,7 +79,7 @@ namespace DeanZhou.Framework
                 var mc = Regex.Matches(Input);
                 if (mc.Count > 0)    // 这里有可能造成cpu资源耗尽
                 {
-                    OnMatchComplete(mc);
+                    if (OnMatchComplete != null) OnMatchComplete(mc);
                 }
             }
         }

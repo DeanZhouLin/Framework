@@ -21,6 +21,9 @@ namespace DeanZhou.Framework
         /// </summary>
         public HttpHelper CurrentHttpHelper { get; set; }
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public HttpCore()
         {
             CurrentHttpItem = new HttpItem();
