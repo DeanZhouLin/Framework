@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using DeanZhou.Framework;
 using HtmlAgilityPack;
@@ -16,7 +15,7 @@ namespace UnitTestCore
     {
         public static void ExecCrawler(int p)
         {
-            CaoQunCrawlerCore cc = new CaoQunCrawlerCore(p,16);
+            CaoQunCrawlerCore cc = new CaoQunCrawlerCore(p, 16);
             cc.ExecCrawler();
         }
 
@@ -37,10 +36,10 @@ namespace UnitTestCore
             HttpCore hc = new HttpCore();
             hc.SetUrl("http://ac168.info/bt/thread.php?fid=16&page={0}", 2);
             var res = hc.GetHtml();
-            var tres = hc.SelectNodes(res, "//*[@id='ajaxtable']/tbody[1]/tr[@class='tr3 t_one']");
+            var tres = res.SelectNodes("//*[@id='ajaxtable']/tbody[1]/tr[@class='tr3 t_one']");
 
             HtmlNode node = tres[10];
-            var an = hc.SelectSingleNode(node, "/td[2]/h3/a");
+            var an = node.SelectSingleNode("/td[2]/h3/a");
 
             string aHref = "http://ac168.info/bt/" + an.Attributes["href"].Value;
             string aText = an.InnerHtml;
@@ -48,7 +47,7 @@ namespace UnitTestCore
 
             hc.SetUrl(aHref);
             res = hc.GetHtml();
-            tres = hc.SelectNodes(res, "//*[@id='read_tpc']/img");
+            tres = res.SelectNodes("//*[@id='read_tpc']/img");
 
             string imgUrl = tres[0].Attributes["src"].Value;
 
