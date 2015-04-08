@@ -6,11 +6,11 @@ namespace DeanZhou.Framework
 {
 
     /// <summary>
-    /// 复杂过滤器
+    /// 列表过滤器
     /// </summary>
-    /// <typeparam name="TItem"></typeparam>
-    /// <typeparam name="TParam"></typeparam>
-    /// <typeparam name="TItemType"></typeparam>
+    /// <typeparam name="TItem">你需要过滤的对象的类型</typeparam>
+    /// <typeparam name="TParam">过滤一个对象需要的辅助参数的类型</typeparam>
+    /// <typeparam name="TItemType">为过滤对象进行类型分类的类型</typeparam>
     public class ListFilterCore<TItem, TParam, TItemType>
         where TItem : class
         where TParam : class
@@ -19,7 +19,8 @@ namespace DeanZhou.Framework
         #region 构造函数
 
         /// <summary>
-        /// 枚举
+        /// 缓存需要识别类型的所有枚举值
+        /// 静态构造函数中进行初始化
         /// </summary>
         public static readonly IEnumerable<TItemType> EnumTypes;
 
@@ -45,12 +46,12 @@ namespace DeanZhou.Framework
 
         #endregion
 
-        #region SetMinGetCount
+        #region Set MinGetCount
 
         /// <summary>
         /// 当前需要提取的类型 
         /// </summary>
-        protected int CurrNeedType;
+        protected TItemType CurrNeedType;
 
         /// <summary>
         /// 退出阀值
@@ -82,7 +83,10 @@ namespace DeanZhou.Framework
                 EachTypeMinGetCount[validEnumType] = needGetCount;
             }
 
-            CurrNeedType = EachTypeMinGetCount.First(c => c.Value > 0).Key.ChangeType<int>();
+            if (EachTypeMinGetCount.Any(c => c.Value > 0))
+            {
+                CurrNeedType = EachTypeMinGetCount.First(c => c.Value > 0).Key;
+            }
 
             bool isFirst = true;
             foreach (KeyValuePair<TItemType, int> kv in EachTypeMinGetCount)
@@ -91,7 +95,7 @@ namespace DeanZhou.Framework
                 {
                     if (kv.Value > 0)
                     {
-                        CurrNeedType = kv.Key.ChangeType<int>();
+                        CurrNeedType = kv.Key;
                         isFirst = false;
                     }
                 }
@@ -99,73 +103,61 @@ namespace DeanZhou.Framework
                 {
                     if (kv.Value > 0)
                     {
-                        CurrNeedType = (CurrNeedType.ChangeType<int>() | kv.Key.ChangeType<int>());
+                        CurrNeedType = (CurrNeedType.GetValue<int>() | kv.Key.GetValue<int>()).GetValue<TItemType>();
                     }
                 }
             }
 
-            QuitValue = EachTypeMinGetCount.Values.Sum();
-            return this;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="needEnumTypeName"></param>
-        /// <param name="needGetCount"></param>
-        /// <returns></returns>
-        public ListFilterCore<TItem, TParam, TItemType> SetMinGetCount(string needEnumTypeName,
-            int needGetCount)
-        {
-            if (!string.IsNullOrEmpty(needEnumTypeName))
+            try
             {
-                foreach (string str in needEnumTypeName.Split('|').Where(c => !string.IsNullOrEmpty(c)))
-                {
-                    SetMinGetCount(Common.CreateEnum<TItemType>(str), needGetCount);
-                }
+                QuitValue = EachTypeMinGetCount.Values.Sum();
+            }
+            catch (Exception)
+            {
+                QuitValue = int.MaxValue;
             }
             return this;
         }
 
         #endregion
 
-        #region RegistEnumTypeIdentifier
+        #region Regist ItemTypeIdentifier
 
         /// <summary>
         /// 类型转换器 *
         /// </summary>
-        protected Func<TItem, TParam, TItemType> EnumTypeIdentifier;
+        protected Func<TItem, TParam, TItemType> ItemTypeIdentifier;
 
         /// <summary>
         /// 注册类型识别器
         /// </summary>
-        /// <param name="enumTypeIdentifier">类型识别器</param>
-        public ListFilterCore<TItem, TParam, TItemType> RegistEnumTypeIdentifier(Func<TItem, TParam, TItemType> enumTypeIdentifier)
+        /// <param name="itemTypeIdentifier">类型识别器</param>
+        public ListFilterCore<TItem, TParam, TItemType> RegistItemTypeIdentifier(Func<TItem, TParam, TItemType> itemTypeIdentifier)
         {
             //初始化对象类型识别器
-            EnumTypeIdentifier = enumTypeIdentifier;
+            ItemTypeIdentifier = itemTypeIdentifier;
             return this;
         }
 
         /// <summary>
         /// 注册类型识别器
         /// </summary>
-        /// <param name="enumTypeIdentifier"></param>
+        /// <param name="itemTypeIdentifier"></param>
         /// <returns></returns>
-        public ListFilterCore<TItem, TParam, TItemType> RegistEnumTypeIdentifier(IItemTypeIdentifier<TItem, TParam, TItemType> enumTypeIdentifier)
+        public ListFilterCore<TItem, TParam, TItemType> RegistItemTypeIdentifier(IItemTypeIdentifier<TItem, TParam, TItemType> itemTypeIdentifier)
         {
-            if (enumTypeIdentifier == null)
+            if (itemTypeIdentifier == null)
             {
                 return this;
             }
             //初始化对象类型识别器
-            EnumTypeIdentifier = enumTypeIdentifier.IdentifyItemType;
+            ItemTypeIdentifier = itemTypeIdentifier.IdentifyItemType;
             return this;
         }
 
         #endregion
 
-        #region AddFilter
+        #region Add Filter
 
         /// <summary>
         /// 简单过滤器实例 *
@@ -192,24 +184,35 @@ namespace DeanZhou.Framework
             return this;
         }
 
-        public ListFilterCore<TItem, TParam, TItemType> AddFilter(string assemblyName, params string[] filterFullClassNames)
-        {
-            SimpleFilterCore.AddFilter(assemblyName, filterFullClassNames);
-            return this;
-        }
         #endregion
 
-        #region DoFilter
+        #region Do Filter
 
         /// <summary>
         /// 获取过滤后的数据
         /// </summary>
-        /// <param name="waitProcessDataList"></param>
-        /// <param name="pt"></param>
+        /// <param name="waitProcessItemList"></param>
+        /// <param name="param"></param>
         /// <returns></returns>
-        public virtual Dictionary<TItem, TItemType> DoFilter(IEnumerable<TItem> waitProcessDataList, TParam pt)
+        public virtual List<TItem> DoFilter(IEnumerable<TItem> waitProcessItemList, TParam param)
         {
-            if (EnumTypeIdentifier == null)
+            return DoFilterWithType(waitProcessItemList, param).Keys.ToList();
+        }
+
+        /// <summary>
+        /// 获取过滤后的数据
+        /// </summary>
+        /// <param name="waitProcessItemList"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public virtual Dictionary<TItem, TItemType> DoFilterWithType(IEnumerable<TItem> waitProcessItemList, TParam param)
+        {
+            if (waitProcessItemList == null)
+            {
+                return new Dictionary<TItem, TItemType>();
+            }
+
+            if (ItemTypeIdentifier == null)
             {
                 throw new Exception("未注册类型识别器");
             }
@@ -218,40 +221,49 @@ namespace DeanZhou.Framework
 
             //当前各个类型上已获取的个数
             Dictionary<TItemType, int> currEachTypeGetedCount = new Dictionary<TItemType, int>();
-            foreach (TItemType item in EnumTypes)
             {
-                currEachTypeGetedCount[item] = 0;
+                foreach (TItemType item in EnumTypes)
+                {
+                    currEachTypeGetedCount[item] = 0;
+                }
             }
 
-            int currCheckedCount = 0;
-
-            foreach (TItem itemType in waitProcessDataList)
+            foreach (TItem item in waitProcessItemList)
             {
-                TItemType et = EnumTypeIdentifier(itemType, pt);
-                IEnumerable<TItemType> validEnums = EnumTypes.Where(targetType => et.HasItem(targetType)).ToList();
+                //识别对象
+                TItemType itemType = ItemTypeIdentifier(item, param);
 
-                if (validEnums.All(enumType => currEachTypeGetedCount[enumType] >= EachTypeMinGetCount[enumType]))
+                //识别出对象拆分（枚举原子化）
+                IEnumerable<TItemType> validEnums = EnumTypes.Where(t => itemType.HasItem(t)).ToList();
+
+                //当前类型已经取满 就不用再走过滤器了
+                if (validEnums.All(t => currEachTypeGetedCount[t] >= EachTypeMinGetCount[t]))
                 {
                     continue;
                 }
 
-                if (!SimpleFilterCore.DoFilter(itemType, pt))
+                //使用简单过滤器删选
+                if (!SimpleFilterCore.DoFilter(item, param))
                 {
                     continue;
                 }
-                currCheckedCount++;
 
-                foreach (TItemType targetType in validEnums)
+                //更新当前分类的获取数目
+                foreach (TItemType t in validEnums)
                 {
-                    currEachTypeGetedCount[targetType]++;
+                    currEachTypeGetedCount[t]++;
                 }
 
-                res.Add(itemType, et);
-                if (IsFinished(currCheckedCount, currEachTypeGetedCount))
+                //添加结果
+                res.Add(item, itemType);
+
+                //是否已经完成
+                if (IsFinished(res.Count, currEachTypeGetedCount))
                 {
                     break;
                 }
             }
+
             return res;
         }
 
@@ -267,16 +279,21 @@ namespace DeanZhou.Framework
                 return true;
             }
 
-            //类型个数退出条件
-            bool isFinished = currEachTypeGetedCount.All(dic =>
+            if (EachTypeMinGetCount.Any(c => c.Value > 0))
             {
-                if ((dic.Key.ChangeType<int>() & CurrNeedType) == dic.Key.ChangeType<int>())
+                //类型个数退出条件
+                bool isFinished = currEachTypeGetedCount.All(dic =>
                 {
-                    return dic.Value >= EachTypeMinGetCount[dic.Key];
-                }
-                return true;
-            });
-            return isFinished;
+                    if (CurrNeedType.HasItem(dic.Key))
+                    {
+                        return dic.Value >= EachTypeMinGetCount[dic.Key];
+                    }
+                    return true;
+                });
+                return isFinished;
+            }
+
+            return false;
         }
 
         #endregion

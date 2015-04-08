@@ -18,7 +18,60 @@ namespace DeanZhou.Framework
     /// </summary>
     public static class CommonExtension
     {
-        //拆箱
+        /// <summary>
+        /// 数据类型转换
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sourceValue"></param>
+        /// <returns></returns>
+        public static T GetValue<T>(this object sourceValue)
+        {
+            return sourceValue.GetValue(default(T));
+        }
+
+        /// <summary>
+        /// 数据类型转换
+        /// </summary>
+        /// <typeparam name="T">返回数据的类型</typeparam>
+        /// <param name="sourceValue">源数据</param>
+        /// <param name="defaultValue"></param>
+        /// <returns>源数据转换成指定类型后的值</returns>
+        public static T GetValue<T>(this object sourceValue, T defaultValue)
+        {
+            if (sourceValue == null || string.IsNullOrEmpty(sourceValue.ToString()))
+            {
+                return defaultValue;
+            }
+            try
+            {
+                T t = (T)Convert.ChangeType(sourceValue, typeof(T));
+                return t;
+            }
+            catch (Exception)
+            {
+                return (T)sourceValue;
+            }
+        }
+
+        /// <summary>
+        /// 数据类型转换
+        /// </summary>
+        /// <typeparam name="T">返回数据的类型</typeparam>
+        /// <param name="sourceValue">源数据</param>
+        /// <param name="defaultValue">默认值</param>
+        /// <returns>源数据转换成指定类型后的值</returns>
+        public static T TryGetValue<T>(this object sourceValue, T defaultValue)
+        {
+            try
+            {
+                return sourceValue.GetValue(defaultValue);
+            }
+            catch (Exception)
+            {
+                return defaultValue;
+            }
+        }
+
         /// <summary>
         /// 拆箱
         /// </summary>
@@ -27,11 +80,9 @@ namespace DeanZhou.Framework
         /// <returns></returns>
         public static T ChangeType<T>(this object sourceValue)
         {
-            T t = (T)Convert.ChangeType(sourceValue, typeof(T));
-            return t;
+            return sourceValue.GetValue<T>();
         }
 
-        //拆箱
         /// <summary>
         /// 拆箱
         /// </summary>
@@ -41,18 +92,9 @@ namespace DeanZhou.Framework
         /// <returns></returns>
         public static T TryChangeType<T>(this object sourceValue, T defaultValue)
         {
-            try
-            {
-                T t = (T)Convert.ChangeType(sourceValue, typeof(T));
-                return t;
-            }
-            catch (Exception)
-            {
-                return defaultValue;
-            }
+            return sourceValue.TryGetValue(defaultValue);
         }
 
-        //对象clone 慎用 大对象复制 导致内存溢出
         /// <summary>
         /// 对象clone
         /// 慎用 大对象复制 导致内存溢出
@@ -72,7 +114,6 @@ namespace DeanZhou.Framework
             }
         }
 
-        //clone DataTable
         /// <summary>
         /// clone DataTable
         /// </summary>
@@ -84,7 +125,6 @@ namespace DeanZhou.Framework
             return sourceTable.Copy();
         }
 
-        //判断字符串是否是数字
         /// <summary>
         /// 判断字符串是否是数字
         /// </summary>
@@ -97,7 +137,6 @@ namespace DeanZhou.Framework
             return ma.Success;
         }
 
-        //格式化日期字符串
         /// <summary>
         /// 格式化日期字符串
         /// </summary>
@@ -109,7 +148,6 @@ namespace DeanZhou.Framework
             return dt.ToString(format);
         }
 
-        //根据DateTime计算是周几 1 2 3 4 5 6 7
         /// <summary>
         /// 根据DateTime计算是周几 1 2 3 4 5 6 7
         /// </summary>
@@ -121,7 +159,6 @@ namespace DeanZhou.Framework
             return dayOfWeek == 0 ? 7 : dayOfWeek;
         }
 
-        //将字符串写入文本文件
         /// <summary>
         /// 将字符串写入文本文件
         /// </summary>
@@ -138,7 +175,6 @@ namespace DeanZhou.Framework
             }
         }
 
-        //根据DataTable中的数据生成实体类集合
         /// <summary>
         /// 根据DataTable中的数据生成实体类集合
         /// </summary>
@@ -171,7 +207,6 @@ namespace DeanZhou.Framework
             return entityList.Count == 0 ? null : entityList;
         }
 
-        //根据IDataReader中的数据生成实体类集合
         /// <summary>
         /// 根据IDataReader中的数据生成实体类集合
         /// </summary>
@@ -269,11 +304,22 @@ namespace DeanZhou.Framework
             return (sourceItem.ChangeType<int>() & targetItem.ChangeType<int>()) == targetItem.ChangeType<int>();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static string ConvertToJson(this object obj)
         {
             return JsonConvert.SerializeObject(obj);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="strJson"></param>
+        /// <returns></returns>
         public static T ConvertToObject<T>(this string strJson)
         {
             return JsonConvert.DeserializeObject<T>(strJson);

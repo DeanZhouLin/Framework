@@ -39,19 +39,25 @@ namespace DeanZhou.Framework
             };
             autoTimer.Elapsed += (sender, e) =>
             {
-                List<TItem> ls = new List<TItem>();
-                lock (LockObj)
+                try
                 {
-                    while (_itemsQueue.Count > 0)
+                    List<TItem> ls = new List<TItem>();
+                    lock (LockObj)
                     {
-                        ls.Add(_itemsQueue.Dequeue());
+                        while (_itemsQueue.Count > 0)
+                        {
+                            ls.Add(_itemsQueue.Dequeue());
+                        }
                     }
+                    if (ls.Count > 0 && execAction != null)
+                    {
+                        execAction(ls);
+                    }
+                    ls.Clear();
                 }
-                if (ls.Count > 0 && execAction != null)
+                catch (Exception)
                 {
-                    execAction(ls);
                 }
-                ls.Clear();
             };
             autoTimer.Start();
         }
@@ -60,7 +66,7 @@ namespace DeanZhou.Framework
         /// 
         /// </summary>
         /// <param name="item"></param>
-        public void PushItem(TItem item)
+        public void AddItem(TItem item)
         {
             lock (LockObj)
             {

@@ -27,7 +27,7 @@ namespace ConsoleTest
             Random r = new Random();
             for (int i = 0; i < 10000000; i++)
             {
-                dp.PushItem(i % 10);
+                dp.AddItem(i % 10);
                 Thread.Sleep(r.Next(10, 300));
             }
 
@@ -123,35 +123,6 @@ namespace ConsoleTest
             Person p = new Person();
             TestReflectProps(p);
             Console.ReadLine();
-            #endregion
-
-            #region 过滤器测试
-
-            //初始化过滤器
-            ListFilterCore<string, DemoStringEnumType> demoStrFilterCore = new ListFilterCore<string, DemoStringEnumType>();
-
-            //初始化 HasOne 2 LongLen 1
-            demoStrFilterCore.SetMinGetCount(DemoStringEnumType.LongLen, 1);
-            demoStrFilterCore.SetMinGetCount(DemoStringEnumType.HasOne, 2);
-
-            //注册类型识别器 识别特性 DemoStringEnumType
-            demoStrFilterCore.RegistEnumTypeIdentifier(new IdentifyDemoString());
-
-            //添加过滤器 过滤掉不是整数的字符串
-            demoStrFilterCore.AddFilter(new DemoStringContentFilter());
-
-            //初始化数据源
-            var ls = new List<string> { "123", "246", "b", "15", "16", "a32" };
-
-            //执行过滤
-            var result = demoStrFilterCore.GetFilteredResult(ls);
-
-            //打印结果
-            Console.WriteLine(string.Join(",", result.Keys));
-
-
-            Console.ReadKey();
-
             #endregion
 
             #region 数据缓存仓库测试
