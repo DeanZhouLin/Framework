@@ -16,6 +16,7 @@ namespace DeanZhou.Framework
     {
         //默认的编码
         private Encoding _encoding = Encoding.Default;
+
         //Post数据编码
         private Encoding _postencoding = Encoding.Default;
 
@@ -294,7 +295,11 @@ namespace DeanZhou.Framework
         /// <param name="chain">X509Chain</param>
         /// <param name="errors">SslPolicyErrors</param>
         /// <returns>bool</returns>
-        private static bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors) { return true; }
+        private static bool CheckValidationResult(object sender, X509Certificate certificate,
+            X509Chain chain, SslPolicyErrors errors)
+        {
+            return true;
+        }
 
     }
 }
