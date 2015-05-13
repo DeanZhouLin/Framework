@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{79D38A39-DCBB-4A8D-865C-CFB1D4F76241}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SinaWeiboCore</RootNamespace>
+    <AssemblyName>SinaWeiboCore</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\SinaWeiboCore.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ReffDll\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="Jeqee.Captcha.Client, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ReffDll\Jeqee.Captcha.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Jeqee.Captcha.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ReffDll\Jeqee.Captcha.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ReffDll\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=3.2.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ReffDll\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="API\ApiHttpWork.cs" />
+    <Compile Include="CN\AnalyseCnPage.cs" />
+    <Compile Include="CN\CNWeiboLogin.cs" />
+    <Compile Include="CN\CNHttpWork.cs" />
+    <Compile Include="CN\GetCnPage.cs" />
+    <Compile Include="CommonExtension.cs" />
+    <Compile Include="Com\ComWeiboLogin.cs" />
+    <Compile Include="Com\ComHttpWork.cs" />
+    <Compile Include="ReffDll\DynamicJson.cs" />
+    <Compile Include="Com\UnfreezeCore\GenerateNewPassword.cs" />
+    <Compile Include="Com\UnfreezeCore\TestifyAndChangePassword.cs" />
+    <Compile Include="Com\UnfreezeCore\AccountExceptionHandling.cs" />
+    <Compile Include="Com\UnfreezeCore\F02.cs" />
+    <Compile Include="Com\UnfreezeCore\JikeSms.cs" />
+    <Compile Include="Com\UnfreezeCore\SMSAPI.cs" />
+    <Compile Include="Com\UnfreezeCore\Taoma.cs" />
+    <Compile Include="Com\UnfreezeCore\Unfreeze.cs" />
+    <Compile Include="Com\UnfreezeCore\Xudan123.cs" />
+    <Compile Include="Com\UnfreezeCore\Yunma.cs" />
+    <Compile Include="Com\UnfreezeCore\Yzm1.cs" />
+    <Compile Include="Contracts.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Com\SinaPassword.cs" />
+    <Compile Include="WebAccessBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mobile\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="1.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="2.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="node.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ReffDll\HtmlAgilityPack.dll" />
+    <Content Include="ReffDll\HtmlAgilityPack.XML" />
+    <Content Include="provinceandcity.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ReffDll\Jeqee.Captcha.Client.dll" />
+    <Content Include="ReffDll\Jeqee.Captcha.Common.dll" />
+    <Content Include="ReffDll\Newtonsoft.Json.dll" />
+    <Content Include="ReffDll\Newtonsoft.Json.xml" />
+    <Content Include="ReffDll\NLog.dll" />
+    <Content Include="ReffDll\NLog.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonEntityLib\CommonEntityLib.csproj">
+      <Project>{68f7f43d-a9f9-4c42-962b-01550e90d962}</Project>
+      <Name>CommonEntityLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
