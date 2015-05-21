@@ -51,6 +51,22 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>RefrenceDll\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="ServiceStack.Common, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Redis, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Text.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -79,6 +95,9 @@
     <Compile Include="Apps\HttpHelper\FrameWork\PostDataType.cs" />
     <Compile Include="Apps\HttpHelper\FrameWork\ResultType.cs" />
     <Compile Include="Apps\LocalLog\LocalLogHelper.cs" />
+    <Compile Include="Apps\Redis\RedisConfig.cs" />
+    <Compile Include="Apps\Redis\RedisManager.cs" />
+    <Compile Include="Apps\Redis\RedisTest.cs" />
     <Compile Include="CommonExtension\HtmlExtension.cs" />
     <Compile Include="Apps\LocalCacheImp\RequestBase.cs" />
     <Compile Include="Apps\ORMFramework\DapperHelper.cs" />
@@ -128,9 +147,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Apps\Redis\redis-2.4.5-win32-win64.zip" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Common.dll" />
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Common.xml" />
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Interfaces.dll" />
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Interfaces.xml" />
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Redis.dll" />
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Redis.xml" />
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Text.dll" />
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Text.xml" />
     <Content Include="RefrenceDll\ICSharpCode.SharpZipLib.dll" />
     <Content Include="RefrenceDll\Newtonsoft.Json.dll" />
   </ItemGroup>

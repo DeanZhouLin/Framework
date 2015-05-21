@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using DeanZhou.Framework;
 using HtmlAgilityPack;
@@ -22,6 +23,9 @@ namespace UnitTestCore
         [TestMethod]
         public void Test()
         {
+            RedisTest.Test();
+
+            Thread.Sleep(10000000);
 
             Parallel.Invoke(
                 () => ExecCrawler(1),
