@@ -46,6 +46,7 @@ namespace DeanZhou.Framework
             int maxReadPoolSize = 100,
             bool isClient = false)
         {
+        
             ServerPath = servicePath;
             ReadWriteHosts = hosts.Split('|').Where(c => !string.IsNullOrEmpty(c)).ToArray();
             DefaultDb = defaultDb;
@@ -60,9 +61,23 @@ namespace DeanZhou.Framework
             return str;
         }
 
-        public string GetMD5Key()
+        private string _md5Key;
+
+        public string MD5Key
         {
-            return EncryptionHelper.Md5(ToString());
+            get
+            {
+                if (string.IsNullOrEmpty(_md5Key))
+                {
+                    _md5Key = GetMD5Key(this);
+                }
+                return _md5Key;
+            }
+        }
+
+        private static string GetMD5Key(RedisConfig redisConfig)
+        {
+            return EncryptionHelper.Md5(redisConfig.ToString());
         }
     }
 }

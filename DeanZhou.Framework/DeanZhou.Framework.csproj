@@ -151,6 +151,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Apps\Redis\ReadME.txt" />
     <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Common.dll" />
     <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Common.xml" />
     <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Interfaces.dll" />

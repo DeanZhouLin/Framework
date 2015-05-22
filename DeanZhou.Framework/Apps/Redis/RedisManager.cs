@@ -19,7 +19,8 @@ namespace DeanZhou.Framework
         /// </summary>
         public static void OpenService(this RedisConfig config)
         {
-            if (_hostedService.Contains(config.GetMD5Key()))
+            string key = config.MD5Key;
+            if (_hostedService.Contains(key))
             {
                 return;
             }
@@ -57,7 +58,7 @@ namespace DeanZhou.Framework
             }; // 初始化新的进程
             p.Start(); // 启动进程
             p.StandardInput.WriteLine("\"{0}\\{1}\" \"{0}\\{2}\"", config.ServerPath, SERVICE_NAME, CONFIG_NAME); // Cmd 命令
-            _hostedService.Add(config.GetMD5Key());
+            _hostedService.Add(key);
         }
 
         /// <summary>
@@ -66,9 +67,10 @@ namespace DeanZhou.Framework
         /// <returns></returns>
         public static PooledRedisClientManager GetClientManager(this RedisConfig config)
         {
-            if (_clients.ContainsKey(config.GetMD5Key()))
+            string key = config.MD5Key;
+            if (_clients.ContainsKey(key))
             {
-                return _clients[config.GetMD5Key()];
+                return _clients[key];
             }
 
             //支持读写分离，均衡负载
@@ -79,7 +81,7 @@ namespace DeanZhou.Framework
                 MaxReadPoolSize = config.MaxWritePoolSize,
                 AutoStart = true
             });
-            _clients.Add(config.GetMD5Key(), res);
+            _clients.Add(key, res);
             return res;
         }
     }

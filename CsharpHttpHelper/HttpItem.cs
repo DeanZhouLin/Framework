@@ -146,7 +146,7 @@ namespace CsharpHttpHelper
         /// <summary>
         /// Post请求时要发送的Byte类型的Post数据
         /// </summary>
-        public byte[] PostdataByte { get; set; } 
+        public byte[] PostdataByte { get; set; }
         #endregion
 
         #region cookie
@@ -167,7 +167,7 @@ namespace CsharpHttpHelper
             get { return _AutoRedirectCookie; }
             set { _AutoRedirectCookie = value; }
         }
-        private ResultCookieType _ResultCookieType = ResultCookieType.String;
+        private ResultCookieType _ResultCookieType = ResultCookieType.CookieCollection;
         /// <summary>
         /// Cookie返回类型,默认的是只返回字符串类型
         /// </summary>
@@ -212,7 +212,7 @@ namespace CsharpHttpHelper
         {
             get { return isToLower; }
             set { isToLower = value; }
-        } 
+        }
         #endregion
 
         #region link
@@ -233,7 +233,7 @@ namespace CsharpHttpHelper
         {
             get { return connectionlimit; }
             set { connectionlimit = value; }
-        } 
+        }
         #endregion
 
         #region proxy
@@ -252,7 +252,7 @@ namespace CsharpHttpHelper
         /// <summary>
         /// 代理 服务IP,如果要使用IE代理就设置为ieproxy
         /// </summary>
-        public string ProxyIp { get; set; } 
+        public string ProxyIp { get; set; }
         #endregion
 
         #region result
@@ -273,7 +273,7 @@ namespace CsharpHttpHelper
         {
             get { return header; }
             set { header = value; }
-        } 
+        }
         #endregion
     }
 }

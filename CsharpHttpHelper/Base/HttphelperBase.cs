@@ -258,7 +258,10 @@ namespace CsharpHttpHelper.Base
         private void SetRequest(HttpItem item)
         {
             //这一句一定要写在创建连接的前面。使用回调的方法进行证书验证。
-            ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(CheckValidationResult);
+            //设置HTTPS方式
+            if (item.URL.ToLower().Contains("https://"))
+                ServicePointManager.ServerCertificateValidationCallback = CheckValidationResult;
+
             //初始化对像，并设置请求的URL地址
             request = (HttpWebRequest)WebRequest.Create(item.URL);
 
@@ -279,6 +282,7 @@ namespace CsharpHttpHelper.Base
             request.Timeout = item.Timeout;
             request.KeepAlive = item.KeepAlive;
             request.ReadWriteTimeout = item.ReadWriteTimeout;
+           
             if (!string.IsNullOrWhiteSpace(item.Host))
             {
                 request.Host = item.Host;
@@ -446,7 +450,7 @@ namespace CsharpHttpHelper.Base
         /// <param name="chain">X509Chain</param>
         /// <param name="errors">SslPolicyErrors</param>
         /// <returns>bool</returns>
-        private bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors) { return true; }
+        private static bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors) { return true; }
         #endregion
     }
 }

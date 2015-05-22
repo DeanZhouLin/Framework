@@ -15,18 +15,19 @@ namespace CsharpHttpHelper_Demo
         protected void Page_Load(object sender, EventArgs e)
         {
             ////创建Httphelper对象
-            //HttpHelper http = new HttpHelper();
-            ////创建Httphelper参数对象
-            //HttpItem item = new HttpItem()
-            //{
-            //    URL = "http://www.sufeinet.com",//URL     必需项    
-            //    Method = "get",//URL     可选项 默认为Get   
-            //    ContentType = "text/html",//返回类型    可选项有默认值   
-            //    //ContentType = "application/x-www-form-urlencoded",//返回类型    可选项有默认值   
-            //};
-            ////请求的返回值对象
-            //HttpResult result = http.GetHtml(item);
-            ////获取请请求的Html
+            HttpHelper http = new HttpHelper();
+            //创建Httphelper参数对象
+            HttpItem item = new HttpItem()
+            {
+                URL = "http://www.sufeinet.com",//URL     必需项    
+                Method = "get",//URL     可选项 默认为Get   
+                ContentType = "text/html",//返回类型    可选项有默认值   
+                Expect100Continue = false
+                //ContentType = "application/x-www-form-urlencoded",//返回类型    可选项有默认值   
+            };
+            //请求的返回值对象
+            HttpResult result = http.GetHtml(item);
+            //获取请请求的Html
             //string html = result.Html;
 
 
