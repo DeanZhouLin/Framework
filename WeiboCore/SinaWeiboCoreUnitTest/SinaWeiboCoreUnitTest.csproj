@@ -61,16 +61,6 @@
     <Compile Include="TestWeiboLogin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CommonEntityLib\CommonEntityLib.csproj">
-      <Project>{68f7f43d-a9f9-4c42-962b-01550e90d962}</Project>
-      <Name>CommonEntityLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SinaWeiboCore\SinaWeiboCore.csproj">
-      <Project>{79d38a39-dcbb-4a8d-865c-cfb1d4f76241}</Project>
-      <Name>SinaWeiboCore</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

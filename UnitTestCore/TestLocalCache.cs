@@ -9,6 +9,7 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using CsharpHttpHelper.Enum;
 using DeanZhou.Framework;
 using HtmlAgilityPack;
@@ -31,6 +32,36 @@ namespace UnitTestCore
             cc.ExecCrawler();
         }
 
+        public async static void
+         TData()
+        {
+            var multiplyBlock = new TransformBlock<int, int>(item =>
+            {
+                var res = item * 2;
+                Console.WriteLine("{0} * 2 = {1}", item, res);
+                return res;
+            });
+
+            var divideBlock = new TransformBlock<int, int>(item =>
+            {
+                var res = item / 2;
+                Console.WriteLine("{0} / 2 = {1}", item, res);
+                return res;
+            });
+
+            multiplyBlock.LinkTo(divideBlock);
+  
+            multiplyBlock.Post(2);
+
+            multiplyBlock.Complete();
+            await divideBlock.Completion;
+        }
+
+        [TestMethod]
+        public void TestData()
+        {
+            TData();
+        }
 
         [TestMethod]
         public void TestLogin()

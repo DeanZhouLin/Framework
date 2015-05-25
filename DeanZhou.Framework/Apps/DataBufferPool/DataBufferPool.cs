@@ -36,7 +36,7 @@ namespace DeanZhou.Framework
         /// <param name="execAction">处理批量数据</param>
         /// <param name="interval">暂存时间 毫秒</param>
         /// <param name="poolName"></param>
-        public DataBufferPool(Action<List<TItem>> execAction, double interval = 5000, string poolName = "DataBufferPool")
+        public DataBufferPool(Action<List<TItem>> execAction, int interval = 5000, string poolName = "DataBufferPool")
         {
             //实例化队列
             _itemsQueue = new Queue<TItem>();
@@ -61,20 +61,13 @@ namespace DeanZhou.Framework
         /// <param name="execAction">处理批量数据</param>
         /// <param name="interval">暂存时间 毫秒</param>
         /// <param name="poolName"></param>
-        private void InitDataBufferPool(Action<List<TItem>> execAction, double interval = 5000, string poolName = "DataBufferPool")
+        private void InitDataBufferPool(Action<List<TItem>> execAction, int interval = 5000, string poolName = "DataBufferPool")
         {
             DataBufferPoolName = typeof(TItem).Name + "_" + poolName;
 
             _itemsQueue.Clear();
 
-            //定时器 定时处理缓存的数据
-            Timer autoTimer = new Timer
-            {
-                AutoReset = true,
-                Enabled = true,
-                Interval = interval
-            };
-            autoTimer.Elapsed += (sender, e) =>
+            AutoClock.Regist(() =>
             {
                 List<TItem> ls = null;
                 lock (LockObj)
@@ -98,8 +91,7 @@ namespace DeanZhou.Framework
                     execAction(ls);
                     ls.Clear();
                 }
-            };
-            autoTimer.Start();
+            }, interval);
         }
     }
 
