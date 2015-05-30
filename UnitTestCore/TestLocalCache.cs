@@ -1,12 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Net;
+using System.Reactive.Linq;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
+using CsharpHttpHelper.Enum;
 using DeanZhou.Framework;
 using HtmlAgilityPack;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ServiceStack.Common;
+using ServiceStack.Text;
+using HttpHelper = CsharpHttpHelper.HttpHelper;
+using HttpItem = CsharpHttpHelper.HttpItem;
+using PostDataType = CsharpHttpHelper.Enum.PostDataType;
+using ResultType = DeanZhou.Framework.ResultType;
 
 namespace UnitTestCore
 {
@@ -19,9 +32,128 @@ namespace UnitTestCore
             cc.ExecCrawler();
         }
 
+        public async static void
+         TData()
+        {
+            var multiplyBlock = new TransformBlock<int, int>(item =>
+            {
+                var res = item * 2;
+                Console.WriteLine("{0} * 2 = {1}", item, res);
+                return res;
+            });
+
+            var divideBlock = new TransformBlock<int, int>(item =>
+            {
+                var res = item / 2;
+                Console.WriteLine("{0} / 2 = {1}", item, res);
+                return res;
+            });
+
+            multiplyBlock.LinkTo(divideBlock);
+  
+            multiplyBlock.Post(2);
+
+            multiplyBlock.Complete();
+            await divideBlock.Completion;
+        }
+
+        [TestMethod]
+        public void TestData()
+        {
+            TData();
+        }
+
+        [TestMethod]
+        public void TestLogin()
+        {
+            HttpHelper hp = new HttpHelper();
+
+            HttpItem httpItem = new HttpItem
+            {
+                Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+                UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36",
+                URL = "http://m.weibo.cn",//URL     必需项    
+                Method = "GET",//URL     可选项 默认为Get   
+
+                Header = new WebHeaderCollection(),
+                CookieCollection = new CookieCollection(),
+                KeepAlive = true,
+                AutoRedirectCookie = true,
+                Allowautoredirect = true//是否根据301跳转     可选项   
+            };
+
+            httpItem.Header.Add("Accept-Encoding", "gzip, deflate, sdch");
+            httpItem.Header.Add("Accept-Language", "zh-CN,zh;q=0.8");
+
+            var res = hp.GetHtml(httpItem);
+
+            //编码用户名 @替换为%40 进行Base64编码
+            string su = "funny_zhoulin@163.com".Replace("@", "%40");
+            Byte[] bufin = Encoding.UTF8.GetBytes(su);
+            su = Convert.ToBase64String(bufin, 0, bufin.Length);
+
+            var callbackStr = string.Format("jsonpcallback{0}", CommonExtension.GetTime());
+            var perLoginUrl = string.Format("https://login.sina.com.cn/sso/prelogin.php?checkpin=1&entry=mweibo&su={0}&callback={1}", su, callbackStr);
+            httpItem.URL = perLoginUrl;
+
+            var perLoginHtml = hp.GetHtml(httpItem);
+
+            httpItem.Cookie += perLoginHtml.Cookie;
+
+
+            string postData = string.Format(
+    "username={0}&password={1}&savestate=1{2}&ec=0&pagerefer=https%3A%2F%2Fpassport.weibo.cn%2Fsignin%2Fwelcome%3Fentry%3Dmweibo%26r%3Dhttp%253A%252F%252Fm.weibo.cn%252F%26&entry=mweibo&loginfrom=&client_id=&code=&hff=&hfp=",
+    "funny_zhoulin@163.com".Replace("@", "%40"), "zhoulin", "");
+
+            postData =
+                "username=funny_zhoulin%40163.com&password=zhoulin&savestate=1&ec=0&pagerefer=https%3A%2F%2Fpassport.weibo.cn%2Fsignin%2Fwelcome%3Fentry%3Dmweibo%26r%3Dhttp%253A%252F%252Fm.weibo.cn%252F%26&entry=mweibo&loginfrom=&client_id=&code=&hff=&hfp=";
+
+            httpItem.Referer = "https://passport.weibo.cn/signin/login?entry=mweibo&res=wel&wm=3349&r=http%3A%2F%2Fm.weibo.cn%2F";
+            httpItem.URL = "https://passport.weibo.cn/sso/login";
+            httpItem.Postdata = postData;
+            httpItem.Method = "post";
+            var postHtml = hp.GetHtml(httpItem);
+
+        }
+
+        public static async Task TT()
+        {
+            await Task.Delay(1000 * 10);
+        }
+
+        [TestMethod]
+        public void Test1()
+        {
+            Task t = TT();
+            Task.WaitAll(t);
+            Observable.Interval(TimeSpan.FromSeconds(1)).Timestamp().Where(c => c.Value % 10 == 0).Select(c => c.Value)
+                .Subscribe(x =>
+                {
+                    LogHelper.CustomInfo(x, "Observable");
+                });
+            while (true)
+            {
+                if (false)
+                {
+                    break;
+                }
+                Thread.Sleep(5000);
+            }
+        }
+
         [TestMethod]
         public void Test()
         {
+            AsyncWorker<int> aw = new AsyncWorker<int>(3, Console.WriteLine);
+            for (int i = 0; i < 100; i++)
+            {
+                aw.AddItem(i);
+            }
+            aw.StopAndWait();
+
+            RedisTest.Test();
+
+            Thread.Sleep(10000000);
 
             Parallel.Invoke(
                 () => ExecCrawler(1),

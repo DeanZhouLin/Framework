@@ -24,14 +24,7 @@ namespace DeanZhou.Framework
         /// </summary>
         public dynamic LocalCache
         {
-            get
-            {
-                if (_localCache == null)
-                {
-                    _localCache = new LocalCacheContainer(_dic);
-                }
-                return _localCache;
-            }
+            get { return _localCache ?? (_localCache = new LocalCacheContainer(_dic)); }
         }
 
         /// <summary>

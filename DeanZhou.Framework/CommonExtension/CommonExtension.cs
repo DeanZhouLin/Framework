@@ -19,6 +19,18 @@ namespace DeanZhou.Framework
     public static class CommonExtension
     {
         /// <summary>
+        /// javascript中GetTime()在c#中实现
+        /// </summary>
+        /// <returns></returns>
+        public static double GetTime()
+        {
+            DateTime minValue = new DateTime(1970, 1, 1);
+            DateTime nowValue = DateTime.Now;
+            double value = (nowValue - minValue).TotalMilliseconds;
+            return Math.Floor(value);
+        }
+
+        /// <summary>
         /// 数据类型转换
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -347,5 +359,8 @@ namespace DeanZhou.Framework
                 return null;
             }
         }
+
     }
+
+   
 }

@@ -43,13 +43,29 @@
       <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>RefrenceDll\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\packages\ICSharpCode.SharpZipLib.dll.0.85.4.369\lib\net20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>RefrenceDll\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Common, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Redis, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Text.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -62,7 +78,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Apps\AutoClock\AutoClock.cs" />
     <Compile Include="Apps\DataBufferPool\DataBufferPool.cs" />
+    <Compile Include="Apps\DataBufferPool\LocalDataHelper.cs" />
     <Compile Include="Apps\FilterFramework\Common.cs" />
     <Compile Include="Apps\FilterFramework\FilterCoreForElement.cs">
       <SubType>Code</SubType>
@@ -80,6 +98,9 @@
     <Compile Include="Apps\HttpHelper\FrameWork\PostDataType.cs" />
     <Compile Include="Apps\HttpHelper\FrameWork\ResultType.cs" />
     <Compile Include="Apps\LocalLog\LocalLogHelper.cs" />
+    <Compile Include="Apps\Redis\RedisConfig.cs" />
+    <Compile Include="Apps\Redis\RedisManager.cs" />
+    <Compile Include="Apps\Redis\RedisTest.cs" />
     <Compile Include="CommonExtension\HtmlExtension.cs" />
     <Compile Include="Apps\LocalCacheImp\RequestBase.cs" />
     <Compile Include="Apps\ORMFramework\DapperHelper.cs" />
@@ -131,11 +152,19 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Apps\Redis\redis-2.4.5-win32-win64.zip" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="RefrenceDll\ICSharpCode.SharpZipLib.dll" />
-    <Content Include="RefrenceDll\Newtonsoft.Json.dll" />
+    <Content Include="Apps\Redis\ReadME.txt" />
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Common.dll" />
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Common.xml" />
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Interfaces.dll" />
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Interfaces.xml" />
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Redis.dll" />
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Redis.xml" />
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Text.dll" />
+    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Text.xml" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="MSScriptControl">
@@ -152,11 +181,6 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\PostSharp.4.0.43\tools\PostSharp.targets" Condition="Exists('..\packages\PostSharp.4.0.43\tools\PostSharp.targets')" />
-  <Target Name="EnsurePostSharpImported" BeforeTargets="BeforeBuild" Condition="'$(PostSharp30Imported)' == ''">
-    <Error Condition="!Exists('..\packages\PostSharp.4.0.43\tools\PostSharp.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://www.postsharp.net/links/nuget-restore." />
-    <Error Condition="Exists('..\packages\PostSharp.4.0.43\tools\PostSharp.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://www.postsharp.net/links/nuget-restore." />
-  </Target>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

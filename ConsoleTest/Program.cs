@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Dynamic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DeanZhou.Framework;
+using JFx.Utils;
 
 namespace ConsoleTest
 {
@@ -26,18 +30,46 @@ namespace ConsoleTest
 
         static void Main(string[] args)
         {
-            Parallel.Invoke(
-    () => ExechplCrawler(1),
-    () => ExechplCrawler(2),
-    () => ExechplCrawler(3),
-       () => ExechplCrawler(4),
-    () => ExechplCrawler(5),
-    () => ExechplCrawler(6),
+            for (int i = 0; i < 100000; i++)
+            {
+                T2 t2 = new T2 { ID = i, T2Name = "fasdfasd" + i };
+                t2.Insert();
+                LocalDBTest lt = new LocalDBTest { Age = 10, ID = 1, Name = "zhoulin" + i, T2S = new List<T2> { t2 } };
+                lt.Insert();
+                Thread.Sleep(100);
+            }
 
-    () => ExechplCrawler(7),
-    () => ExechplCrawler(8)
-    );
-            Console.WriteLine("done");
+
+            //List<LocalDBTest> lts = LocalDB.Select<LocalDBTest>();
+            //if (lts == null || !lts.Any())
+            //{
+            //    T2 t2 = new T2 { ID = 23, T2Name = "fasdfasd" };
+            //    t2.Insert();
+            //    LocalDBTest lt = new LocalDBTest { Age = 10, ID = 1, Name = "zhoulin", T2S = new List<T2> { t2 } };
+            //    lt.Insert();
+            //}
+            //else
+            //{
+            //    LocalDBTest lt = lts.First();
+            //    if (lt.remark == null)
+            //    {
+            //        lt.remark = new List<string>();
+            //    }
+            //    if (lt.T2S == null)
+            //    {
+            //        lt.T2S = new List<T2> { new T2 { ID = 23, T2Name = "fasdfasd" } };
+            //    }
+            //    lt.remark.Add(new Random().Next().ToString());
+            //    lt.Update();
+
+            //    lt = new LocalDBTest { Age = 10, ID = 1, Name = "zhoulin_" + new Random().Next() };
+            //    lt.Insert();
+            //}
+
+            Person pson = new Person { id = "1", Name = "zl" };
+            Thread.Sleep(10000 * 323);
+            string rrr = SerializerHelper.JsonSerializer(pson);
+            pson = SerializerHelper.JsonDeserialize<Person>("{\"id\":\"1\",\"Int_id\":3,\"Name\":\"zl\"}");
 
             DataBufferPool<int> dp = new DataBufferPool<int>(tls =>
             {
@@ -256,9 +288,26 @@ namespace ConsoleTest
             return dt;
         }
 
+        [Serializable]
+        public class LocalDBTest : DOBase
+        {
+            public string Name { get; set; }
+
+            public int Age { get; set; }
+
+            public List<string> remark { get; set; }
+
+            public List<T2> T2S { get; set; }
+        }
+
+        [Serializable]
+        public class T2 : DOBase
+        {
+            public string T2Name { get; set; }
+        }
+
         public class Person
         {
-
             public string id { get; set; }
 
             public int Int_id
@@ -266,6 +315,8 @@ namespace ConsoleTest
                 get { return id.TryChangeType(0); }
             }
             public string Name { get; set; }
+
+            private static readonly List<Person> allSource;
         }
 
         public class Group
