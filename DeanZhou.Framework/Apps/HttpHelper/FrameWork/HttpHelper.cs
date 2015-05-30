@@ -60,11 +60,13 @@ namespace DeanZhou.Framework
                     if (_response.Cookies != null) result.CookieCollection = _response.Cookies;
                     if (_response.Headers["set-cookie"] != null) result.Cookie = _response.Headers["set-cookie"];
                     //GZIIP处理
-                    MemoryStream stream = GetMemoryStream(_response.ContentEncoding.Equals("gzip", StringComparison.InvariantCultureIgnoreCase) ?
-                        // ReSharper disable AssignNullToNotNullAttribute
-                                                              new GZipStream(_response.GetResponseStream(), CompressionMode.Decompress) :
-                        // ReSharper restore AssignNullToNotNullAttribute
-                                                              _response.GetResponseStream());
+                    MemoryStream stream =
+                        GetMemoryStream(_response.ContentEncoding.Equals("gzip",
+                            StringComparison.InvariantCultureIgnoreCase)
+                            ? // ReSharper disable AssignNullToNotNullAttribute
+                            new GZipStream(_response.GetResponseStream(), CompressionMode.Decompress)
+                            : // ReSharper restore AssignNullToNotNullAttribute
+                            _response.GetResponseStream());
                     //获取Byte
                     byte[] rawResponse = stream.ToArray();
                     stream.Close();
@@ -73,14 +75,22 @@ namespace DeanZhou.Framework
                     //从这里开始我们要无视编码了
                     if (_encoding == null)
                     {
-                        Match meta = Regex.Match(Encoding.Default.GetString(rawResponse), "<meta([^<]*)charset=([^<]*)[\"']", RegexOptions.IgnoreCase);
+                        Match meta = Regex.Match(Encoding.Default.GetString(rawResponse),
+                            "<meta([^<]*)charset=([^<]*)[\"']", RegexOptions.IgnoreCase);
                         string charter = (meta.Groups.Count > 1) ? meta.Groups[2].Value.ToLower() : string.Empty;
                         if (charter.Length > 2)
-                            _encoding = Encoding.GetEncoding(charter.Trim().Replace("\"", "").Replace("'", "").Replace(";", "").Replace("iso-8859-1", "gbk"));
+                            _encoding =
+                                Encoding.GetEncoding(
+                                    charter.Trim()
+                                        .Replace("\"", "")
+                                        .Replace("'", "")
+                                        .Replace(";", "")
+                                        .Replace("iso-8859-1", "gbk"));
                         else
                         {
-                            _encoding = string.IsNullOrEmpty(_response.CharacterSet) ? Encoding.UTF8 :
-                                Encoding.GetEncoding(_response.CharacterSet);
+                            _encoding = string.IsNullOrEmpty(_response.CharacterSet)
+                                ? Encoding.UTF8
+                                : Encoding.GetEncoding(_response.CharacterSet);
                         }
                     }
                     //得到返回的HTML

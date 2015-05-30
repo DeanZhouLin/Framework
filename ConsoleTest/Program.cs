@@ -17,8 +17,28 @@ namespace ConsoleTest
             CaoQunCrawlerCore cc = new CaoQunCrawlerCore(p, t);
             cc.ExecCrawler();
         }
+
+        public static void ExechplCrawler(int p)
+        {
+            CLCrawlerCore cc = new CLCrawlerCore(p);
+            cc.ExecCrawler();
+        }
+
         static void Main(string[] args)
         {
+            Parallel.Invoke(
+    () => ExechplCrawler(1),
+    () => ExechplCrawler(2),
+    () => ExechplCrawler(3),
+       () => ExechplCrawler(4),
+    () => ExechplCrawler(5),
+    () => ExechplCrawler(6),
+
+    () => ExechplCrawler(7),
+    () => ExechplCrawler(8)
+    );
+            Console.WriteLine("done");
+
             DataBufferPool<int> dp = new DataBufferPool<int>(tls =>
             {
                 Console.WriteLine(tls.Count + "|" + string.Join(",", tls));
