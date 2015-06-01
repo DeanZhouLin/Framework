@@ -113,6 +113,8 @@
     <Compile Include="Apps\DataWarehouseFramework\DataWarehouse.cs" />
     <Compile Include="Apps\DataWarehouseFramework\StoredDataInfo.cs" />
     <Compile Include="CommonExtension\RandomNumberCore.cs" />
+    <Compile Include="Demos\WebCrawlerDemo\CLCrawlerCore.cs" />
+    <Compile Include="Demos\WebCrawlerDemo\HPLCrawlerCore.cs" />
     <Compile Include="Demos\WebCrawlerDemo\CaoQunCrawlerCore.cs" />
     <Compile Include="Apps\JR\AppEnvironment.cs" />
     <Compile Include="Apps\JR\Config\AppSettingsHelper.cs" />
@@ -160,7 +162,17 @@
   <ItemGroup>
     <Content Include="Apps\Redis\ReadME.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <COMReference Include="MSScriptControl">
+      <Guid>{0E59F1D2-1FBE-11D0-8FF2-00A0D10038BC}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>

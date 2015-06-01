@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using System.Net;
+using System.Threading;
 using System.Web;
 
 namespace DeanZhou.Framework
@@ -46,8 +48,14 @@ namespace DeanZhou.Framework
         /// <returns></returns>
         public virtual string GetHtml()
         {
-            var res = GetHttpResult().Html;
-            return res;
+            var res = GetHttpResult();
+            int count = 0;
+            while (res.StatusCode != HttpStatusCode.OK && count++ < 3 && res.Html.Length > 500)
+            {
+                Thread.Sleep(200);
+                res = GetHttpResult();
+            }
+            return res.Html;
         }
 
         /// <summary>

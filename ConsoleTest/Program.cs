@@ -21,6 +21,13 @@ namespace ConsoleTest
             CaoQunCrawlerCore cc = new CaoQunCrawlerCore(p, t);
             cc.ExecCrawler();
         }
+
+        public static void ExechplCrawler(int p)
+        {
+            CLCrawlerCore cc = new CLCrawlerCore(p);
+            cc.ExecCrawler();
+        }
+
         static void Main(string[] args)
         {
             for (int i = 0; i < 100000; i++)

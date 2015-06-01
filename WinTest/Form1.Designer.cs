@@ -42,6 +42,7 @@
             this.btnSelectNode = new System.Windows.Forms.Button();
             this.dgvRes = new System.Windows.Forms.DataGridView();
             this.txtAttributeName = new System.Windows.Forms.TextBox();
+            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRes)).BeginInit();
             this.SuspendLayout();
             // 
@@ -167,11 +168,20 @@
             this.txtAttributeName.Size = new System.Drawing.Size(234, 21);
             this.txtAttributeName.TabIndex = 13;
             // 
+            // webBrowser1
+            // 
+            this.webBrowser1.Location = new System.Drawing.Point(282, 252);
+            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser1.Name = "webBrowser1";
+            this.webBrowser1.Size = new System.Drawing.Size(250, 250);
+            this.webBrowser1.TabIndex = 14;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1449, 581);
+            this.Controls.Add(this.webBrowser1);
             this.Controls.Add(this.txtAttributeName);
             this.Controls.Add(this.dgvRes);
             this.Controls.Add(this.btnSelectNode);
@@ -210,6 +220,7 @@
         private System.Windows.Forms.Button btnSelectNode;
         private System.Windows.Forms.DataGridView dgvRes;
         private System.Windows.Forms.TextBox txtAttributeName;
+        private System.Windows.Forms.WebBrowser webBrowser1;
     }
 }
 
