@@ -53,6 +53,106 @@
             http://code.google.com/p/protobuf-net/source/browse/trunk/protobuf-net/BufferPool.cs
             </summary>
         </member>
+        <member name="T:ServiceStack.Redis.RedisManagerPool">
+            <summary>
+            Provides thread-safe pooling of redis client connections.
+            </summary>
+        </member>
+        <member name="M:ServiceStack.Redis.RedisManagerPool.GetClient">
+            <summary>
+            Returns a Read/Write client (The default) using the hosts defined in ReadWriteHosts
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ServiceStack.Redis.RedisManagerPool.GetInActiveClient">
+            <summary>
+            Called within a lock
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ServiceStack.Redis.RedisManagerPool.DisposeWriteClient(ServiceStack.Redis.RedisNativeClient)">
+            <summary>
+            Disposes the write client.
+            </summary>
+            <param name="client">The client.</param>
+        </member>
+        <member name="T:ServiceStack.Redis.RedisClient">
+            <summary>
+            The client wraps the native redis operations into a more readable c# API.
+            
+            Where possible these operations are also exposed in common c# interfaces, 
+            e.g. RedisClient.Lists => IList[string]
+            	 RedisClient.Sets => ICollection[string]
+            </summary>
+        </member>
+        <member name="T:ServiceStack.Redis.RedisNativeClient">
+            <summary>
+            This class contains all the common operations for the RedisClient.
+            The client contains a 1:1 mapping of c# methods to redis operations of the same name.
+            
+            Not threadsafe use a pooled manager
+            </summary>
+        </member>
+        <member name="F:ServiceStack.Redis.RedisNativeClient.active">
+            <summary>
+            Used to manage connection pooling
+            </summary>
+        </member>
+        <member name="M:ServiceStack.Redis.RedisNativeClient.Exec">
+            <summary>
+            Requires custom result parsing
+            </summary>
+            <returns>Number of results</returns>
+        </member>
+        <member name="M:ServiceStack.Redis.RedisNativeClient.SendCommand(System.Byte[][])">
+            <summary>
+            Command to set multuple binary safe arguments
+            </summary>
+            <param name="cmdWithBinaryArgs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServiceStack.Redis.RedisNativeClient.ResetSendBuffer">
+            <summary>
+            reset buffer index in send buffer
+            </summary>
+        </member>
+        <member name="P:ServiceStack.Redis.RedisNativeClient.NamespacePrefix">
+            <summary>
+            Gets or sets object key prefix.
+            </summary>
+        </member>
+        <member name="M:ServiceStack.Redis.RedisClient.New">
+            <summary>
+            Creates a new instance of the Redis Client from NewFactoryFn. 
+            </summary>
+        </member>
+        <member name="M:ServiceStack.Redis.RedisClient.GetEntry(System.String)">
+            <summary>
+            Alias for GetValue
+            </summary>
+        </member>
+        <member name="M:ServiceStack.Redis.RedisClient.UrnKey``1(``0)">
+            <summary>
+            Returns key with automatic object id detection in provided value with <typeparam name="T">generic type</typeparam>.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServiceStack.Redis.RedisClient.UrnKey``1(System.Object)">
+            <summary>
+            Returns key with explicit object id.
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ServiceStack.Redis.RedisClient.UrnKey(System.Type,System.Object)">
+            <summary>
+            Returns key with explicit object type and id.
+            </summary>
+            <param name="type"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="T:ServiceStack.Redis.Generic.QueuedRedisTypedCommand`1">
             <summary>
             A complete redis command, with method to send command, receive response, and run callback on success or failure
@@ -87,74 +187,14 @@
             Redis operation (transaction/pipeline) that allows queued commands to be completed
             </summary>
         </member>
-        <member name="T:ServiceStack.Redis.Messaging.RedisMqHost">
+        <member name="T:ServiceStack.Redis.RedisClientManagerCacheClient">
             <summary>
-            Creates an MQ Host that processes all messages on a single background thread. 
-            i.e. If you register 3 handlers it will only create 1 background thread.
+            For interoperabilty GetCacheClient() and GetReadOnlyCacheClient()
+            return an ICacheClient wrapper around the redis manager which has the affect of calling 
+            GetClient() for all write operations and GetReadOnlyClient() for the read ones.
             
-            The same background thread that listens to the Redis MQ Subscription for new messages 
-            also cycles through each registered handler processing all pending messages one-at-a-time:
-            first in the message PriorityQ, then in the normal message InQ.
-            
-            The Start/Stop methods are idempotent i.e. It's safe to call them repeatedly on multiple threads 
-            and the Redis MQ Host will only have Started/Stopped once.
-            </summary>
-        </member>
-        <member name="P:ServiceStack.Redis.Messaging.RedisMqHost.ReplyClientFactory">
-            <summary>
-            Inject your own Reply Client Factory to handle custom Message.ReplyTo urls.
-            </summary>
-        </member>
-        <member name="T:ServiceStack.Redis.Messaging.RedisMqServer">
-            <summary>
-            Creates a Redis MQ Server that processes each message on its own background thread.
-            i.e. if you register 3 handlers it will create 7 background threads:
-              - 1 listening to the Redis MQ Subscription, getting notified of each new message
-              - 3x1 Normal InQ for each message handler
-              - 3x1 PriorityQ for each message handler
-            
-            When RedisMqServer Starts it creates a background thread subscribed to the Redis MQ Topic that
-            listens for new incoming messages. It also starts 2 background threads for each message type:
-             - 1 for processing the services Priority Queue and 1 processing the services normal Inbox Queue.
-            
-            Priority Queue's can be enabled on a message-per-message basis by specifying types in the 
-            OnlyEnablePriortyQueuesForTypes property. The DisableAllPriorityQueues property disables all Queues.
-            
-            The Start/Stop methods are idempotent i.e. It's safe to call them repeatedly on multiple threads 
-            and the Redis MQ Server will only have Started or Stopped once.
-            </summary>
-        </member>
-        <member name="P:ServiceStack.Redis.Messaging.RedisMqServer.RequestFilter">
-            <summary>
-            Execute global transformation or custom logic before a request is processed.
-            Must be thread-safe.
-            </summary>
-        </member>
-        <member name="P:ServiceStack.Redis.Messaging.RedisMqServer.ResponseFilter">
-            <summary>
-            Execute global transformation or custom logic on the response.
-            Must be thread-safe.
-            </summary>
-        </member>
-        <member name="P:ServiceStack.Redis.Messaging.RedisMqServer.ErrorHandler">
-            <summary>
-            Execute global error handler logic. Must be thread-safe.
-            </summary>
-        </member>
-        <member name="P:ServiceStack.Redis.Messaging.RedisMqServer.PriortyQueuesWhitelist">
-            <summary>
-            If you only want to enable priority queue handlers (and threads) for specific msg types
-            </summary>
-        </member>
-        <member name="P:ServiceStack.Redis.Messaging.RedisMqServer.DisablePriorityQueues">
-            <summary>
-            Don't listen on any Priority Queues
-            </summary>
-        </member>
-        <member name="P:ServiceStack.Redis.Messaging.RedisMqServer.PublishResponsesWhitelist">
-            <summary>
-            Opt-in to only publish responses on this white list. 
-            Publishes all responses by default.
+            This works well for master-slave replication scenarios where you have 
+            1 master that replicates to multiple read slaves.
             </summary>
         </member>
         <member name="M:ServiceStack.Redis.RedisClientManagerCacheClient.Dispose">
@@ -164,7 +204,15 @@
         </member>
         <member name="T:ServiceStack.Redis.RedisClientsManagerExtensions">
             <summary>
-            Useful wrapper IRedisClientsManager to cut down the boiler plat of most IRedisClient access
+            Useful wrapper IRedisClientsManager to cut down the boiler plate of most IRedisClient access
+            </summary>
+        </member>
+        <member name="M:ServiceStack.Redis.RedisClientsManagerExtensions.CreatePubSubServer(ServiceStack.Redis.IRedisClientsManager,System.String,System.Action{System.String,System.String},System.Action{System.Exception},System.Action,System.Action,System.Action)">
+            <summary>
+            Creates a PubSubServer that uses a background thread to listen and process for
+            Redis Pub/Sub messages published to the specified channel. 
+            Use optional callbacks to listen for message, error and life-cycle events.
+            Callbacks can be assigned later, then call Start() for PubSubServer to start listening for messages
             </summary>
         </member>
         <member name="T:ServiceStack.Redis.Pipeline.QueuedRedisCommand">
@@ -177,76 +225,49 @@
             Redis command that does not get queued
             </summary>
         </member>
-        <member name="T:ServiceStack.Redis.RedisClient">
+        <member name="M:ServiceStack.Redis.RedisSentinel.Start">
             <summary>
-            The client wraps the native redis operations into a more readable c# API.
-            
-            Where possible these operations are also exposed in common c# interfaces, 
-            e.g. RedisClient.Lists => IList[string]
-            	 RedisClient.Sets => ICollection[string]
+            Initialize Sentinel Subscription and Configure Redis ClientsManager
             </summary>
         </member>
-        <member name="T:ServiceStack.Redis.RedisNativeClient">
+        <member name="M:ServiceStack.Redis.RedisSentinel.ShouldRetry">
             <summary>
-            This class contains all the common operations for the RedisClient.
-            The client contains a 1:1 mapping of c# methods to redis operations of the same name.
-            
-            Not threadsafe use a pooled manager
+            Check if GetValidSentinel should try the next sentinel server
+            </summary>
+            <returns></returns>
+            <remarks>This will be true if the failures is less than either RedisSentinel.MaxFailures or the # of sentinels, whatever is greater</remarks>
+        </member>
+        <member name="M:ServiceStack.Redis.RedisSentinel.OnSentinelError(System.Exception)">
+            <summary>
+            Raised if there is an error from a sentinel worker
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:ServiceStack.Redis.RedisSentinelWorker.SentinelMessageReceived(System.String,System.String)">
+            <summary>
+            Event that is fired when the sentinel subscription raises an event
+            </summary>
+            <param name="channel"></param>
+            <param name="message"></param>
+        </member>
+        <member name="M:ServiceStack.Redis.RedisSentinelWorker.ConfigureRedisFromSentinel">
+            <summary>
+            Does a sentinel check for masters and slaves and either sets up or fails over to the new config
             </summary>
         </member>
-        <member name="M:ServiceStack.Redis.RedisNativeClient.Exec">
+        <member name="M:ServiceStack.Redis.RedisSentinelWorker.ConvertSlaveArrayToList(System.Object[])">
             <summary>
-            Requires custom result parsing
+            Takes output from sentinel slaves command and converts into a list of servers
             </summary>
-            <returns>Number of results</returns>
-        </member>
-        <member name="M:ServiceStack.Redis.RedisNativeClient.SendCommand(System.Byte[][])">
-            <summary>
-            Command to set multuple binary safe arguments
-            </summary>
-            <param name="cmdWithBinaryArgs"></param>
+            <param name="items"></param>
             <returns></returns>
         </member>
-        <member name="M:ServiceStack.Redis.RedisNativeClient.ResetSendBuffer">
+        <member name="M:ServiceStack.Redis.RedisSentinelWorker.ConvertMasterArrayToList(System.Object[])">
             <summary>
-            reset buffer index in send buffer
+            Takes output from sentinel master command and converts into a list of servers
             </summary>
-        </member>
-        <member name="P:ServiceStack.Redis.RedisNativeClient.Active">
-            <summary>
-            Used to manage connection pooling
-            </summary>
-        </member>
-        <member name="P:ServiceStack.Redis.RedisNativeClient.NamespacePrefix">
-            <summary>
-            Gets or sets object key prefix.
-            </summary>
-        </member>
-        <member name="M:ServiceStack.Redis.RedisClient.New">
-            <summary>
-            Creates a new instance of the Redis Client from NewFactoryFn. 
-            </summary>
-        </member>
-        <member name="M:ServiceStack.Redis.RedisClient.UrnKey``1(``0)">
-            <summary>
-            Returns key with automatic object id detection in provided value with <typeparam name="T">generic type</typeparam>.
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ServiceStack.Redis.RedisClient.UrnKey``1(System.Object)">
-            <summary>
-            Returns key with explicit object id.
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ServiceStack.Redis.RedisClient.UrnKey(System.Type,System.Object)">
-            <summary>
-            Returns key with explicit object type and id.
-            </summary>
-            <param name="type"></param>
-            <param name="id"></param>
+            <param name="items"></param>
             <returns></returns>
         </member>
         <member name="T:ServiceStack.Redis.ShardedConnectionPool">
@@ -255,14 +276,6 @@
             </summary>
         </member>
         <member name="T:ServiceStack.Redis.PooledRedisClientManager">
-            <summary>
-            For interoperabilty GetCacheClient() and GetReadOnlyCacheClient()
-            return an ICacheClient wrapper around the redis manager which has the affect of calling 
-            GetClient() for all write operations and GetReadOnlyClient() for the read ones.
-            
-            This works well for master-slave replication scenarios where you have 
-            1 master that replicates to multiple read slaves.
-            </summary>
             <summary>
             Provides thread-safe pooling of redis client connections.
             Allows load-balancing of master-write and read-slave hosts, ideal for
@@ -392,6 +405,23 @@
             </summary>
             <param name="key"> </param>
             <returns> </returns>
+        </member>
+        <member name="T:ServiceStack.Redis.Support.Diagnostic.InvokeEventArgs">
+            <summary>
+            Provides access to the method reflection data as part of the before/after event
+            </summary>
+        </member>
+        <member name="T:ServiceStack.Redis.Support.Diagnostic.TrackingFrame">
+            <summary>
+            Stores details about the context in which an IRedisClient is allocated. 
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:ServiceStack.Redis.Support.Diagnostic.TrackingRedisClientProxy" -->
+        <member name="T:ServiceStack.Redis.Support.Diagnostic.TrackingRedisClientsManager">
+            <summary>
+            Tracks each IRedisClient instance allocated from the IRedisClientsManager logging when they are allocated and disposed. 
+            Periodically writes the allocated instances to the log for diagnostic purposes.
+            </summary>
         </member>
         <member name="T:ServiceStack.Redis.Support.Locking.IDistributedLock">
             <summary>
@@ -797,16 +827,6 @@
         <member name="T:ServiceStack.Redis.RedisClientSortedSet">
             <summary>
             Wrap the common redis set operations under a ICollection[string] interface.
-            </summary>
-        </member>
-        <member name="T:ServiceStack.Redis.Messaging.RedisTransientMessageFactory">
-            <summary>
-            Transient message queues are a one-pass message queue service that starts
-            processing messages when Start() is called. Any subsequent Start() calls 
-            while the service is running is ignored.
-            
-            The transient service will continue to run until all messages have been 
-            processed after which time it will shutdown all processing until Start() is called again.
             </summary>
         </member>
         <member name="T:ServiceStack.Redis.RedisException">

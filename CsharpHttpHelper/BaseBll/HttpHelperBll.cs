@@ -37,19 +37,8 @@ namespace CsharpHttpHelper.BaseBll
                     {
                         break;
                     }
-                    else
-                    {
-                        item.URL = result.RedirectUrl;
-                        item.Method = "GET";
-                        if (item.ResultCookieType == ResultCookieType.String)
-                        {
-                            item.Cookie += result.Cookie;
-                        }
-                        else
-                        {
-                            item.CookieCollection.Add(result.CookieCollection);
-                        }
-                    }
+                    item.URL = result.RedirectUrl;
+                    item.Method = "GET";
                 }
                 return result;
             }

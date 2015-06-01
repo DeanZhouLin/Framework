@@ -51,30 +51,34 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Common, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.Common, Version=4.0.40.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Common.dll</HintPath>
+      <HintPath>..\packages\ServiceStack.Common.4.0.40\lib\net40\ServiceStack.Common.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.Interfaces, Version=4.0.0.0, Culture=neutral, PublicKeyToken=e06fbc6124f57c43, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Interfaces.dll</HintPath>
+      <HintPath>..\packages\ServiceStack.Interfaces.4.0.40\lib\portable-wp80+sl5+net40+win8+monotouch+monoandroid+xamarin.ios10\ServiceStack.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Redis, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.Redis, Version=4.0.40.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Redis.dll</HintPath>
+      <HintPath>..\packages\ServiceStack.Redis.4.0.40\lib\net40\ServiceStack.Redis.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.Text, Version=3.9.70.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ServiceStack.Text, Version=4.0.40.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Text.dll</HintPath>
+      <HintPath>..\packages\ServiceStack.Text.4.0.40\lib\net40\ServiceStack.Text.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Apps\AutoClock\AutoClock.cs" />
@@ -146,6 +150,7 @@
     <Compile Include="Apps\JR\Web\MessageBox.cs" />
     <Compile Include="Apps\ThreadPoolExtension\ThreadPoolExtension.cs" />
     <Compile Include="Apps\ThreadPoolExtension\MutipleThreadResetEvent.cs" />
+    <Compile Include="DynamicJson.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -154,14 +159,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Apps\Redis\ReadME.txt" />
-    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Common.dll" />
-    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Common.xml" />
-    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Interfaces.dll" />
-    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Interfaces.xml" />
-    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Redis.dll" />
-    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Redis.xml" />
-    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Text.dll" />
-    <Content Include="Apps\Redis\Redis 2.4.5-64bit\ServiceStack.Text.xml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

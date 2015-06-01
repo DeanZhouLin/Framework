@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using JFx;
 
 namespace DeanZhou.Framework
@@ -6,37 +7,38 @@ namespace DeanZhou.Framework
     /// <summary>
     /// Redis配置
     /// </summary>
-    public class RedisConfig
+    [Serializable]
+    public class RedisConfig : DOBase
     {
         /// <summary>
         /// 服务路径
         /// </summary>
-        public string ServerPath { get; private set; }
+        public string ServerPath { get; set; }
 
         /// <summary>
         /// 服务地址端口 如127.0.0.1:45632
         /// </summary>
-        public string[] ReadWriteHosts { get; private set; }
+        public string[] ReadWriteHosts { get; set; }
 
         /// <summary>
         /// 默认数据库
         /// </summary>
-        public long DefaultDb { get; private set; }
+        public long DefaultDb { get; set; }
 
         /// <summary>
         /// 最大写入线程数量
         /// </summary>
-        public int MaxWritePoolSize { get; private set; }
+        public int MaxWritePoolSize { get; set; }
 
         /// <summary>
         /// 最大读取线程数量
         /// </summary>
-        public int MaxReadPoolSize { get; private set; }
+        public int MaxReadPoolSize { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public bool IsClient { get; private set; }
+        public bool IsClient { get; set; }
 
         public RedisConfig(
             string servicePath = @"C:\Program Files\Redis 2.4.5\64bit",
@@ -46,7 +48,7 @@ namespace DeanZhou.Framework
             int maxReadPoolSize = 100,
             bool isClient = false)
         {
-        
+
             ServerPath = servicePath;
             ReadWriteHosts = hosts.Split('|').Where(c => !string.IsNullOrEmpty(c)).ToArray();
             DefaultDb = defaultDb;
@@ -55,9 +57,13 @@ namespace DeanZhou.Framework
             IsClient = isClient;
         }
 
+        public RedisConfig()
+        {
+        }
+
         public override string ToString()
         {
-            string str = string.Format("{0} {1} {2} {3} {4} {5}", ServerPath, string.Join(",", ReadWriteHosts), DefaultDb, MaxWritePoolSize, MaxReadPoolSize, IsClient);
+            string str = string.Format("{0} {1} {2} {3} {4} {5}", ServerPath, string.Join(",", ReadWriteHosts ?? new string[] { }), DefaultDb, MaxWritePoolSize, MaxReadPoolSize, IsClient);
             return str;
         }
 

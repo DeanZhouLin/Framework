@@ -14,8 +14,10 @@ using CsharpHttpHelper.Enum;
 using DeanZhou.Framework;
 using HtmlAgilityPack;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ServiceStack;
 using ServiceStack.Common;
 using ServiceStack.Text;
+using DynamicJson = DeanZhou.Framework.DynamicJson;
 using HttpHelper = CsharpHttpHelper.HttpHelper;
 using HttpItem = CsharpHttpHelper.HttpItem;
 using PostDataType = CsharpHttpHelper.Enum.PostDataType;
@@ -32,8 +34,7 @@ namespace UnitTestCore
             cc.ExecCrawler();
         }
 
-        public async static void
-         TData()
+        public async static void TData()
         {
             var multiplyBlock = new TransformBlock<int, int>(item =>
             {
@@ -50,7 +51,7 @@ namespace UnitTestCore
             });
 
             multiplyBlock.LinkTo(divideBlock);
-  
+
             multiplyBlock.Post(2);
 
             multiplyBlock.Complete();
@@ -74,14 +75,12 @@ namespace UnitTestCore
                 UserAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36",
                 URL = "http://m.weibo.cn",//URL     必需项    
                 Method = "GET",//URL     可选项 默认为Get   
-
                 Header = new WebHeaderCollection(),
                 CookieCollection = new CookieCollection(),
                 KeepAlive = true,
                 AutoRedirectCookie = true,
                 Allowautoredirect = true//是否根据301跳转     可选项   
             };
-
             httpItem.Header.Add("Accept-Encoding", "gzip, deflate, sdch");
             httpItem.Header.Add("Accept-Language", "zh-CN,zh;q=0.8");
 
@@ -105,16 +104,59 @@ namespace UnitTestCore
     "username={0}&password={1}&savestate=1{2}&ec=0&pagerefer=https%3A%2F%2Fpassport.weibo.cn%2Fsignin%2Fwelcome%3Fentry%3Dmweibo%26r%3Dhttp%253A%252F%252Fm.weibo.cn%252F%26&entry=mweibo&loginfrom=&client_id=&code=&hff=&hfp=",
     "funny_zhoulin@163.com".Replace("@", "%40"), "zhoulin", "");
 
-            postData =
-                "username=funny_zhoulin%40163.com&password=zhoulin&savestate=1&ec=0&pagerefer=https%3A%2F%2Fpassport.weibo.cn%2Fsignin%2Fwelcome%3Fentry%3Dmweibo%26r%3Dhttp%253A%252F%252Fm.weibo.cn%252F%26&entry=mweibo&loginfrom=&client_id=&code=&hff=&hfp=";
-
             httpItem.Referer = "https://passport.weibo.cn/signin/login?entry=mweibo&res=wel&wm=3349&r=http%3A%2F%2Fm.weibo.cn%2F";
             httpItem.URL = "https://passport.weibo.cn/sso/login";
             httpItem.Postdata = postData;
             httpItem.Method = "post";
+            httpItem.ContentType = "application/x-www-form-urlencoded";
             var postHtml = hp.GetHtml(httpItem);
 
+            dynamic postResult = DynamicJson.Parse(postHtml.Html);
+            string retcode = postResult.retcode;
+            string Uid = postResult.data.uid;
+
+            if (postResult.data.IsDefined("loginresulturl") && !string.IsNullOrEmpty(postResult.data["loginresulturl"]))
+            {
+                string loginresulturl = postResult.data["loginresulturl"] + "&savestate=1&url=http%3A%2F%2Fm.weibo.cn%2F";
+                httpItem.Referer = "https://passport.weibo.cn/signin/login?entry=mweibo&res=wel&wm=3349&r=http%3A%2F%2Fm.weibo.cn%2F";
+                httpItem.URL = loginresulturl;
+                httpItem.Method = "Get";
+                httpItem.ContentType = "";
+
+                var temp0 = hp.GetHtml(httpItem);
+
+            }
+            else
+            {
+                string weibo_com = string.Format("https:{0}&savestate=1&callback=jsonpcallback{1}", postResult.data.crossdomainlist["weibo.com"], GetTime());
+                httpItem.Referer = "https://passport.weibo.cn/signin/login?entry=mweibo&res=wel&wm=3349&r=http%3A%2F%2Fm.weibo.cn%2F";
+                httpItem.URL = weibo_com;
+                httpItem.Method = "Get";
+                httpItem.ContentType = "";
+                var temp1 = hp.GetHtml(httpItem);
+
+                string sina_com_cn = string.Format("https:{0}&savestate=1&callback=jsonpcallback{1}", postResult.data.crossdomainlist["sina.com.cn"], GetTime());
+                httpItem.URL = weibo_com;
+                httpItem.Method = "Get";
+                httpItem.ContentType = "";
+                var temp2 = hp.GetHtml(httpItem);
+
+                string weibo_cn = string.Format("https:{0}&savestate=1&callback=jsonpcallback{1}", postResult.data.crossdomainlist["weibo.cn"], GetTime());
+                httpItem.URL = weibo_cn;
+                httpItem.Method = "Get";
+                httpItem.ContentType = "";
+                var temp3 = hp.GetHtml(httpItem);
+            }
         }
+
+        public static double GetTime()
+        {
+            DateTime minValue = new DateTime(1970, 1, 1);
+            DateTime nowValue = DateTime.Now;
+            double value = (nowValue - minValue).TotalMilliseconds;
+            return Math.Floor(value);
+        }
+
 
         public static async Task TT()
         {
@@ -144,6 +186,20 @@ namespace UnitTestCore
         [TestMethod]
         public void Test()
         {
+            Parallel.For(0, 100, i =>
+            {
+                DateTime dt = SysTimeRecord.Get(i.ToString());
+                SysTimeRecord.Set(i.ToString(), dt == DateTime.MinValue ? DateTime.Now.AddDays(-i) : dt.AddHours(1));
+            });
+
+            for (int i = 0; i < 100; i++)
+            {
+                DateTime dt = SysTimeRecord.Get(i.ToString());
+                SysTimeRecord.Set(i.ToString(), dt == DateTime.MinValue ? DateTime.Now.AddDays(i) : dt.AddHours(-1));
+            }
+            RedisTest.Test();
+
+
             AsyncWorker<int> aw = new AsyncWorker<int>(3, Console.WriteLine);
             for (int i = 0; i < 100; i++)
             {
@@ -151,7 +207,6 @@ namespace UnitTestCore
             }
             aw.StopAndWait();
 
-            RedisTest.Test();
 
             Thread.Sleep(10000000);
 

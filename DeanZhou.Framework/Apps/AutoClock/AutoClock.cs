@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
@@ -7,7 +8,7 @@ namespace DeanZhou.Framework
 {
     public static class AutoClock
     {
-        private static readonly Dictionary<int, Action> WaitExecActions = new Dictionary<int, Action>();
+        private static readonly ConcurrentDictionary<int, Action> WaitExecActions = new ConcurrentDictionary<int, Action>();
 
         private static readonly object _lockObj = new object();
 
@@ -39,7 +40,7 @@ namespace DeanZhou.Framework
                 }
                 else
                 {
-                    WaitExecActions.Add(runInterval, action);
+                    WaitExecActions.AddOrUpdate(runInterval, action);
                 }
             }
         }

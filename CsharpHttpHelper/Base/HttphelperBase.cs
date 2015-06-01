@@ -48,13 +48,17 @@ namespace CsharpHttpHelper.Base
             catch (Exception ex)
             {
                 //配置参数时出错
-                return new HttpResult() { Cookie = string.Empty, Header = null, Html = ex.Message, StatusDescription = "配置参数时出错：" + ex.Message };
+                return new HttpResult { Cookie = string.Empty, Header = null, Html = ex.Message, StatusDescription = "配置参数时出错：" + ex.Message };
             }
             try
             {
                 //请求数据
                 using (response = (HttpWebResponse)request.GetResponse())
                 {
+                    foreach (Cookie cookie in response.Cookies)
+                    {
+                        item.CookieCollection.Add(cookie);
+                    }
                     GetData(item, result);
                 }
             }
@@ -263,7 +267,7 @@ namespace CsharpHttpHelper.Base
                 ServicePointManager.ServerCertificateValidationCallback = CheckValidationResult;
 
             //初始化对像，并设置请求的URL地址
-            request = (HttpWebRequest)WebRequest.Create(item.URL);
+            request = (HttpWebRequest)WebRequest.Create(new Uri(item.URL));
 
             // 验证证书
             SetCer(item);
@@ -282,7 +286,7 @@ namespace CsharpHttpHelper.Base
             request.Timeout = item.Timeout;
             request.KeepAlive = item.KeepAlive;
             request.ReadWriteTimeout = item.ReadWriteTimeout;
-           
+
             if (!string.IsNullOrWhiteSpace(item.Host))
             {
                 request.Host = item.Host;
@@ -436,7 +440,7 @@ namespace CsharpHttpHelper.Base
             }
             else
             {
-                request.Proxy = item.WebProxy;
+                // request.Proxy = item.WebProxy;
             }
         }
         #endregion

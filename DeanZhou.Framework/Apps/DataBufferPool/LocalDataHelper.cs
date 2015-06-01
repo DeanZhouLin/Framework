@@ -8,6 +8,44 @@ using JFx.Utils;
 namespace DeanZhou.Framework
 {
     [Serializable]
+    public class SysTimeRecord : DOBase
+    {
+        public string SysName { get; set; }
+
+        public DateTime RecordTime { get; set; }
+
+        private static readonly object _lockObj = new object();
+
+        public static DateTime Get(string sysName)
+        {
+            lock (_lockObj)
+            {
+                List<SysTimeRecord> ls = LocalDB<SysTimeRecord>.Select();
+                if (ls.Exists(c => c.SysName == sysName))
+                {
+                    return ls.First(c => c.SysName == sysName).RecordTime;
+                }
+                return DateTime.MinValue;
+            }
+        }
+
+        public static void Set(string sysName, DateTime setDt)
+        {
+            lock (_lockObj)
+            {
+                List<SysTimeRecord> ls = LocalDB<SysTimeRecord>.Select();
+                if (ls.Exists(c => c.SysName == sysName))
+                {
+                    ls.First(c => c.SysName == sysName).RecordTime = setDt;
+                    return;
+                }
+                SysTimeRecord tem = new SysTimeRecord { SysName = sysName, RecordTime = setDt };
+                tem.Insert();
+            }
+        }
+    }
+
+    [Serializable]
     public class DOBase
     {
         public int ID { get; set; }
@@ -17,9 +55,8 @@ namespace DeanZhou.Framework
     {
         private static List<T> allSource;
 
-        private LocalDB()
+        LocalDB()
         {
-
         }
 
         private static void RegistLocalDB()
@@ -30,7 +67,7 @@ namespace DeanZhou.Framework
                 Directory.CreateDirectory(dbFilePath);
             }
 
-            string dbFileName = (typeof(T).Namespace + typeof(T).Name).Replace(".", "_") + ".db";
+            string dbFileName = (typeof(T).Namespace + "_" + typeof(T).Name).Replace(".", "_") + ".db";
             string fileName = dbFilePath + "/" + dbFileName;
             if (File.Exists(fileName))
             {
@@ -39,8 +76,10 @@ namespace DeanZhou.Framework
                     string allStr = File.ReadAllText(fileName);
                     allSource = SerializerHelper.JsonDeserialize<List<T>>(allStr);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    LogHelper.CustomInfoEnabled = true;
+                    LogHelper.CustomInfo(ex, "RegistLocalDB_JsonDeserialize_ERR");
                     File.Delete(fileName);
                 }
             }
@@ -52,16 +91,24 @@ namespace DeanZhou.Framework
 
             AutoClock.Regist(() =>
             {
-                FileInfo dbFile = new FileInfo(fileName);
-                FileStream fs = dbFile.Open(FileMode.Create, FileAccess.Write);
-                char[] r = SerializerHelper.JsonSerializer(allSource).ToCharArray();
-                Encoder e = Encoding.UTF8.GetEncoder();
-                byte[] byData = new byte[r.Length];
-                e.GetBytes(r, 0, r.Length, byData, 0, true);
-                fs.Write(byData, 0, byData.Length);
-                fs.Flush();
-                fs.Close();
-            }, 1);
+                try
+                {
+                    FileInfo dbFile = new FileInfo(fileName);
+                    FileStream fs = dbFile.Open(FileMode.Create, FileAccess.Write);
+                    char[] r = SerializerHelper.JsonSerializer(allSource).ToCharArray();
+                    Encoder e = Encoding.UTF8.GetEncoder();
+                    byte[] byData = new byte[r.Length];
+                    e.GetBytes(r, 0, r.Length, byData, 0, true);
+                    fs.Write(byData, 0, byData.Length);
+                    fs.Flush();
+                    fs.Close();
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.CustomInfoEnabled = true;
+                    LogHelper.CustomInfo(ex, "RegistLocalDB_AutoClock_ERR");
+                }
+            }, 3);
         }
 
         public static void Insert(T p)
@@ -114,7 +161,7 @@ namespace DeanZhou.Framework
             {
                 RegistLocalDB();
             }
-            return allSource.CloneObj();
+            return allSource;
         }
     }
 
