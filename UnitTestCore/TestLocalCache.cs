@@ -61,6 +61,27 @@ namespace UnitTestCore
         [TestMethod]
         public void TestData()
         {
+            while (true)
+            {
+                List<PersonTest> ps = LocalDB<PersonTest>.Select();
+                if (ps.Any())
+                {
+                    PersonTest p = ps[0];
+                    p.Age += 1;
+                    if (p.Age > 50)
+                    {
+                        break;
+                    }
+                    p.Insert();
+                }
+                else
+                {
+                    PersonTest p = new PersonTest { Name = "zhoulin", Age = 0 };
+                    p.Insert();
+                }
+                Thread.Sleep(500);
+            }
+
             TData();
         }
 
@@ -323,6 +344,13 @@ namespace UnitTestCore
                 });
             }
             return ps;
+        }
+
+        [Serializable]
+        public class PersonTest : DOBase
+        {
+            public string Name { get; set; }
+            public int Age { get; set; }
         }
     }
 }
