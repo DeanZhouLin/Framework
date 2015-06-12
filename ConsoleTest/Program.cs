@@ -30,6 +30,9 @@ namespace ConsoleTest
 
         static void Main(string[] args)
         {
+            Derived d = new Derived();
+            Console.Read();
+
             for (int i = 0; i < 100000; i++)
             {
                 T2 t2 = new T2 { ID = i, T2Name = "fasdfasd" + i };
@@ -216,6 +219,56 @@ namespace ConsoleTest
 
             #endregion
 
+        }
+
+        public class Base
+        {
+            public Base()
+            {
+                System.Console.WriteLine("Base.Base");
+                ABitDangerousCall();
+            }
+
+            public virtual void ABitDangerousCall()
+            {
+                System.Console.WriteLine("Base.ABitDangerousCall");
+            }
+
+            private class Inner
+            {
+                public Inner()
+                {
+                    System.Console.WriteLine("Base.Inner.Inner");
+                }
+            }
+            private Inner inner = new Inner();
+        }
+
+        class Derived : Base
+        {
+            public Derived()
+            {
+                System.Console.WriteLine("Derived.Derived");
+                ctorInitializedMember = 5;
+            }
+
+            // ctorInitializedMember is default initialized to zero before the constructor initializes it.
+            private int ctorInitializedMember;
+            private int derivedInt = 6;
+
+            public override void ABitDangerousCall()
+            {
+                System.Console.WriteLine(String.Format("Derived.ABitDangerousCallctorInitializedMember={0} derivedInt={1}", ctorInitializedMember, derivedInt));
+            }
+
+            private class Inner
+            {
+                public Inner()
+                {
+                    System.Console.WriteLine("Derived.Inner.Inner");
+                }
+            }
+            private Inner inner = new Inner();
         }
 
         private static void TestReflectProps<T>(T t)

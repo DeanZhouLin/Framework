@@ -262,6 +262,10 @@ namespace DeanZhou.Framework
                 _request.ContentLength = buffer.Length;
                 _request.GetRequestStream().Write(buffer, 0, buffer.Length);
             }
+            else
+            {
+                _request.ContentLength = 0;
+            }
         }
 
         /// <summary>
