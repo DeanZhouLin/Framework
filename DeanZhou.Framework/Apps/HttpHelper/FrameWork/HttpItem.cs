@@ -8,6 +8,8 @@ namespace DeanZhou.Framework
     /// <summary>
     /// Http请求参考类
     /// </summary>
+
+    [Serializable]
     public class HttpItem
     {
         /// <summary>
@@ -168,6 +170,15 @@ namespace DeanZhou.Framework
             IsToLower = false;
             CookieCollection = null;
             Encoding = null;
+        }
+
+        public HttpItem GetNextHttpItem(string url, string cookie)
+        {
+            HttpItem item = this.CloneObj();
+            item.URL = url;
+            item.Referer = URL;
+            item.Cookie = cookie;
+            return item;
         }
     }
 }
