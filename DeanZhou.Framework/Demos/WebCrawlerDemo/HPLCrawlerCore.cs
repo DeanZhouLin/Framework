@@ -63,9 +63,9 @@ namespace DeanZhou.Framework
             return text1;
         }
 
-        private List<HPLMainItem> GetCaoQunMainItems()
+        private List<MainItem> GetCaoQunMainItems()
         {
-            List<HPLMainItem> res = new List<HPLMainItem>();
+            List<MainItem> res = new List<MainItem>();
             HttpCore hc = new HttpCore();
             hc.SetUrl(CaoQunUrl);
             string mainHtml = hc.GetHtml();
@@ -81,7 +81,7 @@ namespace DeanZhou.Framework
             HtmlNodeCollection mainItems = mainHtml.SelectNodes("/html/body/div[8]/div[2]/div[@class='list-pianyuan-box']");
             if (mainItems == null)
             {
-                return new List<HPLMainItem>();
+                return new List<MainItem>();
             }
             foreach (HtmlNode mainItem in mainItems)
             {
@@ -90,7 +90,7 @@ namespace DeanZhou.Framework
                 string infoUrl = "http://www.haipilu.net/" + an.Attributes["href"].Value;
                 string title = an.InnerText;
 
-                HPLMainItem temp = new HPLMainItem
+                MainItem temp = new MainItem
                 {
                     HPLDetailItem = new HPLDetailItem(),
                     InfoUrl = infoUrl,
@@ -104,7 +104,7 @@ namespace DeanZhou.Framework
 
         public void ExecCrawler()
         {
-            List<HPLMainItem> mainItems = GetCaoQunMainItems();
+            List<MainItem> mainItems = GetCaoQunMainItems();
 
             Parallel.ForEach(mainItems, caoQunMainItem =>
             {
@@ -140,7 +140,7 @@ namespace DeanZhou.Framework
 
         }
 
-        private static void SaveImg(string imgFileName, HPLMainItem caoQunMainItem, Image img, string imgUrl)
+        private static void SaveImg(string imgFileName, MainItem caoQunMainItem, Image img, string imgUrl)
         {
             try
             {
@@ -162,7 +162,7 @@ namespace DeanZhou.Framework
             }
         }
 
-        private static void StoreDB(HPLMainItem caoQunMainItem)
+        private static void StoreDB(MainItem caoQunMainItem)
         {
             DapperHelper dh = DapperHelper.GetInstance("Data Source=.;Initial Catalog=DeanDB;Integrated Security=True");
             const string sqlFormat =
@@ -183,7 +183,7 @@ namespace DeanZhou.Framework
 
     }
 
-    public class HPLMainItem
+    public class MainItem
     {
         public string InfoUrl { get; set; }
 

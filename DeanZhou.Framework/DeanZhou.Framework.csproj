@@ -106,6 +106,7 @@
     <Compile Include="Apps\Redis\RedisConfig.cs" />
     <Compile Include="Apps\Redis\RedisManager.cs" />
     <Compile Include="Apps\Redis\RedisTest.cs" />
+    <Compile Include="CommonExtension\FileEncodingDetection.cs" />
     <Compile Include="CommonExtension\HtmlExtension.cs" />
     <Compile Include="Apps\LocalCacheImp\RequestBase.cs" />
     <Compile Include="Apps\ORMFramework\DapperHelper.cs" />
