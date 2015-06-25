@@ -57,7 +57,7 @@ namespace DeanZhou.Framework
             }
         }
 
-        public static void Do()
+        private static void Do()
         {
             lock (_lockObj)
             {
@@ -66,9 +66,12 @@ namespace DeanZhou.Framework
                 {
                     rc = 1;
                 }
-                if (WaitExecActions.ContainsKey(rc))
+                foreach (var waitExecAction in WaitExecActions)
                 {
-                    WaitExecActions[rc]();
+                    if (rc % waitExecAction.Key == 0)
+                    {
+                        waitExecAction.Value();
+                    }
                 }
             }
         }

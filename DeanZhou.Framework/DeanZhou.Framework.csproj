@@ -101,6 +101,8 @@
     <Compile Include="Apps\HttpHelper\FrameWork\PostDataType.cs" />
     <Compile Include="Apps\HttpHelper\FrameWork\ResultType.cs" />
     <Compile Include="Apps\LocalLog\LocalLogHelper.cs" />
+    <Compile Include="Apps\PPDCheckIn\LoginAndCheckIn.cs" />
+    <Compile Include="Apps\PPDCheckIn\CheckData.cs" />
     <Compile Include="Apps\Redis\RedisConfig.cs" />
     <Compile Include="Apps\Redis\RedisManager.cs" />
     <Compile Include="Apps\Redis\RedisTest.cs" />

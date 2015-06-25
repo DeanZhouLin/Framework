@@ -1,22 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Web;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DeanZhou.Framework;
 
-namespace UnitTestCore
+namespace DeanZhou.Framework.Apps
 {
-    [TestClass]
-    public class UnitTestPPD
+    public class LoginAndCheckIn
     {
-        [TestMethod]
-        public void TestLogin()
+        public static void Sync()
+        {
+            AutoClock.Regist(() =>
+            {
+                CheckData cd = new CheckData();
+                cd.Insert();
+
+                cd.CheckTime = DateTime.Now;
+                cd.CheckResult = Do();
+                Console.WriteLine("{0} 开始检测 返回{1}", cd.CheckTime, cd.CheckResult);
+            }, 60 * 60 * 3);
+        }
+
+        public static string Do(string userName = "funny_zhoulin%40163.com", string password = "")
         {
             HttpHelper http = new HttpHelper();
-            HttpItem item = new HttpItem()
+            HttpItem item = new HttpItem
             {
                 URL = "https://ac.ppdai.com/User/Login",//URL     必需项
                 Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
@@ -69,7 +77,7 @@ namespace UnitTestCore
             item.ContentType = "application/x-www-form-urlencoded";
             item.Referer = "https://ac.ppdai.com/User/Login";
             item.Method = "POST";
-            item.Postdata = string.Format("IsAsync=true&Redirect=&UserName={0}&Password={1}&RememberMe=false", "funny_zhoulin%40163.com", "zhoulin880501");
+            item.Postdata = string.Format("IsAsync=true&Redirect=&UserName={0}&Password={1}&RememberMe=false", userName, password);
 
             result = http.GetHtml(item);
 
@@ -109,7 +117,8 @@ namespace UnitTestCore
             item.Postdata = "";
 
             result = http.GetHtml(item);
-            Console.WriteLine(result.Html);
+            return result.Html;
         }
+
     }
 }
