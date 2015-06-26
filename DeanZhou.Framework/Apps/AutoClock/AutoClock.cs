@@ -54,6 +54,7 @@ namespace DeanZhou.Framework
                 {
                     WaitExecActions.AddOrUpdate(runInterval, action);
                 }
+                action();
             }
         }
 

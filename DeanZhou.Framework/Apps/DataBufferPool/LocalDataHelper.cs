@@ -118,7 +118,6 @@ namespace DeanZhou.Framework
                 RegistLocalDB();
             }
 
-            p = p.CloneObj();
             if (allSource != null && allSource.Any())
             {
                 p.ID = allSource.Max(c => c.ID) + 1;

@@ -12,11 +12,8 @@ namespace DeanZhou.Framework.Apps
         {
             AutoClock.Regist(() =>
             {
-                CheckData cd = new CheckData();
+                CheckData cd = new CheckData { CheckTime = DateTime.Now, CheckResult = Do() };
                 cd.Insert();
-
-                cd.CheckTime = DateTime.Now;
-                cd.CheckResult = Do();
                 Console.WriteLine("{0} 开始检测 返回{1}", cd.CheckTime, cd.CheckResult);
             }, 60 * 60 * 3);
         }
